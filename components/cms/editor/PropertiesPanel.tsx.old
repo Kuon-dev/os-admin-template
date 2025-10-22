@@ -1,0 +1,1237 @@
+"use client";
+
+import { Settings, ChevronDown } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from '@/components/ui/switch';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Separator } from '@/components/ui/separator';
+import usePageBuilderStore from '@/stores/page-builder-store';
+import { useState } from 'react';
+import { cn } from '@/lib/utils';
+import type {
+  TextProps,
+  HeadingProps,
+  ButtonProps,
+  ImageProps,
+  DividerProps,
+  ContainerProps,
+  GridProps,
+  ColumnProps,
+  SpacerProps,
+} from '@/types/page-builder';
+
+export function PropertiesPanel() {
+  const { currentPage, selectedComponentId, actions } = usePageBuilderStore();
+
+  // Find the selected component
+  const findComponent = (id: string) => {
+    if (!currentPage) return null;
+
+    const search = (components: any[]): any => {
+      for (const comp of components) {
+        if (comp.id === id) return comp;
+        if (comp.children) {
+          const found = search(comp.children);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+
+    return search(currentPage.components);
+  };
+
+  const selectedComponent = selectedComponentId
+    ? findComponent(selectedComponentId)
+    : null;
+
+  const updateProps = (updates: any) => {
+    if (!selectedComponentId) return;
+    actions.updateComponent(selectedComponentId, updates);
+  };
+
+  if (!selectedComponent) {
+    return (
+      <div className="w-80 border-l bg-background flex flex-col">
+        <div className="p-4 border-b">
+          <h3 className="font-semibold">Properties</h3>
+        </div>
+        <div className="flex-1 flex items-center justify-center p-4">
+          <div className="text-center text-muted-foreground">
+            <Settings className="h-12 w-12 mx-auto mb-2 opacity-50" />
+            <p className="text-sm">Select a component to edit its properties</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const renderProperties = () => {
+    switch (selectedComponent.type) {
+      case 'text':
+        return <TextProperties props={selectedComponent.props as TextProps} updateProps={updateProps} />;
+      case 'heading':
+        return <HeadingProperties props={selectedComponent.props as HeadingProps} updateProps={updateProps} />;
+      case 'button':
+        return <ButtonProperties props={selectedComponent.props as ButtonProps} updateProps={updateProps} />;
+      case 'image':
+        return <ImageProperties props={selectedComponent.props as ImageProps} updateProps={updateProps} />;
+      case 'divider':
+        return <DividerProperties props={selectedComponent.props as DividerProps} updateProps={updateProps} />;
+      case 'container':
+        return <ContainerProperties props={selectedComponent.props as ContainerProps} updateProps={updateProps} />;
+      case 'grid':
+        return <GridProperties props={selectedComponent.props as GridProps} updateProps={updateProps} />;
+      case 'column':
+        return <ColumnProperties props={selectedComponent.props as ColumnProps} updateProps={updateProps} />;
+      case 'spacer':
+        return <SpacerProperties props={selectedComponent.props as SpacerProps} updateProps={updateProps} />;
+      default:
+        return <div className="p-4 text-sm text-muted-foreground">No properties available</div>;
+    }
+  };
+
+  return (
+    <div className="w-80 border-l bg-background flex flex-col">
+      <div className="p-4 border-b">
+        <h3 className="font-semibold">Properties</h3>
+        <p className="text-xs text-muted-foreground mt-1 capitalize">
+          {selectedComponent.type} Component
+        </p>
+      </div>
+      <ScrollArea className="flex-1">
+        <div className="p-4 space-y-1">
+          {renderProperties()}
+        </div>
+      </ScrollArea>
+    </div>
+  );
+}
+
+// Reusable Property Section Component
+function PropertySection({
+  title,
+  children,
+  defaultOpen = true
+}: {
+  title: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-2">
+      <CollapsibleTrigger className="flex items-center justify-between w-full py-2 hover:bg-accent rounded px-2">
+        <span className="text-sm font-medium">{title}</span>
+        <ChevronDown className={cn(
+          "h-4 w-4 transition-transform",
+          isOpen && "rotate-180"
+        )} />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="space-y-3 px-2 pb-2">
+        {children}
+      </CollapsibleContent>
+      <Separator />
+    </Collapsible>
+  );
+}
+
+// Common Spacing Controls (used by all components)
+function SpacingControls({ props, updateProps }: { props: any; updateProps: (updates: any) => void }) {
+  return (
+    <PropertySection title="Spacing" defaultOpen={false}>
+      <div className="grid grid-cols-2 gap-2">
+        <div className="space-y-1">
+          <Label className="text-xs">Margin Top</Label>
+          <Input
+            value={props.marginTop || ''}
+            onChange={(e) => updateProps({ marginTop: e.target.value })}
+            placeholder="0px"
+            className="h-8 text-xs"
+          />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Margin Bottom</Label>
+          <Input
+            value={props.marginBottom || ''}
+            onChange={(e) => updateProps({ marginBottom: e.target.value })}
+            placeholder="0px"
+            className="h-8 text-xs"
+          />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Margin Left</Label>
+          <Input
+            value={props.marginLeft || ''}
+            onChange={(e) => updateProps({ marginLeft: e.target.value })}
+            placeholder="0px"
+            className="h-8 text-xs"
+          />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Margin Right</Label>
+          <Input
+            value={props.marginRight || ''}
+            onChange={(e) => updateProps({ marginRight: e.target.value })}
+            placeholder="0px"
+            className="h-8 text-xs"
+          />
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-2 mt-2">
+        <div className="space-y-1">
+          <Label className="text-xs">Padding Top</Label>
+          <Input
+            value={props.paddingTop || ''}
+            onChange={(e) => updateProps({ paddingTop: e.target.value })}
+            placeholder="0px"
+            className="h-8 text-xs"
+          />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Padding Bottom</Label>
+          <Input
+            value={props.paddingBottom || ''}
+            onChange={(e) => updateProps({ paddingBottom: e.target.value })}
+            placeholder="0px"
+            className="h-8 text-xs"
+          />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Padding Left</Label>
+          <Input
+            value={props.paddingLeft || ''}
+            onChange={(e) => updateProps({ paddingLeft: e.target.value })}
+            placeholder="0px"
+            className="h-8 text-xs"
+          />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Padding Right</Label>
+          <Input
+            value={props.paddingRight || ''}
+            onChange={(e) => updateProps({ paddingRight: e.target.value })}
+            placeholder="0px"
+            className="h-8 text-xs"
+          />
+        </div>
+      </div>
+    </PropertySection>
+  );
+}
+
+// Text Component Properties
+function TextProperties({ props, updateProps }: { props: TextProps; updateProps: (updates: any) => void }) {
+  return (
+    <>
+      <PropertySection title="Content">
+        <div className="space-y-2">
+          <Label>Text</Label>
+          <Input
+            value={props.content}
+            onChange={(e) => updateProps({ content: e.target.value })}
+            placeholder="Enter text..."
+          />
+        </div>
+      </PropertySection>
+
+      <PropertySection title="Typography">
+        <div className="space-y-2">
+          <Label>Font Size</Label>
+          <Input
+            value={props.fontSize || '16px'}
+            onChange={(e) => updateProps({ fontSize: e.target.value })}
+            placeholder="16px"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Font Weight</Label>
+          <Input
+            value={props.fontWeight || 'normal'}
+            onChange={(e) => updateProps({ fontWeight: e.target.value })}
+            placeholder="normal, bold, 600"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Font Family</Label>
+          <Input
+            value={props.fontFamily || ''}
+            onChange={(e) => updateProps({ fontFamily: e.target.value })}
+            placeholder="Arial, sans-serif"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Color</Label>
+          <Input
+            type="color"
+            value={props.color || '#000000'}
+            onChange={(e) => updateProps({ color: e.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Alignment</Label>
+          <Select
+            value={props.alignment || 'left'}
+            onValueChange={(value) => updateProps({ alignment: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="left">Left</SelectItem>
+              <SelectItem value="center">Center</SelectItem>
+              <SelectItem value="right">Right</SelectItem>
+              <SelectItem value="justify">Justify</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label>Line Height</Label>
+          <Input
+            value={props.lineHeight || ''}
+            onChange={(e) => updateProps({ lineHeight: e.target.value })}
+            placeholder="1.5"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Letter Spacing</Label>
+          <Input
+            value={props.letterSpacing || ''}
+            onChange={(e) => updateProps({ letterSpacing: e.target.value })}
+            placeholder="0px"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Text Transform</Label>
+          <Select
+            value={props.textTransform || 'none'}
+            onValueChange={(value) => updateProps({ textTransform: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">None</SelectItem>
+              <SelectItem value="uppercase">Uppercase</SelectItem>
+              <SelectItem value="lowercase">Lowercase</SelectItem>
+              <SelectItem value="capitalize">Capitalize</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label>Text Decoration</Label>
+          <Select
+            value={props.textDecoration || 'none'}
+            onValueChange={(value) => updateProps({ textDecoration: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">None</SelectItem>
+              <SelectItem value="underline">Underline</SelectItem>
+              <SelectItem value="line-through">Line Through</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </PropertySection>
+
+      <PropertySection title="Effects" defaultOpen={false}>
+        <div className="space-y-2">
+          <Label>Text Shadow</Label>
+          <Input
+            value={props.textShadow || ''}
+            onChange={(e) => updateProps({ textShadow: e.target.value })}
+            placeholder="2px 2px 4px rgba(0,0,0,0.5)"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Opacity</Label>
+          <Input
+            type="number"
+            min="0"
+            max="1"
+            step="0.1"
+            value={props.opacity ?? 1}
+            onChange={(e) => updateProps({ opacity: parseFloat(e.target.value) })}
+          />
+        </div>
+      </PropertySection>
+
+      <PropertySection title="Link" defaultOpen={false}>
+        <div className="space-y-2">
+          <Label>URL</Label>
+          <Input
+            value={props.link || ''}
+            onChange={(e) => updateProps({ link: e.target.value })}
+            placeholder="https://..."
+          />
+        </div>
+        <div className="flex items-center space-x-2">
+          <Switch
+            checked={props.openInNewTab || false}
+            onCheckedChange={(checked) => updateProps({ openInNewTab: checked })}
+          />
+          <Label>Open in New Tab</Label>
+        </div>
+      </PropertySection>
+
+      <SpacingControls props={props} updateProps={updateProps} />
+    </>
+  );
+}
+
+// Heading Component Properties
+function HeadingProperties({ props, updateProps }: { props: HeadingProps; updateProps: (updates: any) => void }) {
+  return (
+    <>
+      <PropertySection title="Content">
+        <div className="space-y-2">
+          <Label>Text</Label>
+          <Input
+            value={props.content}
+            onChange={(e) => updateProps({ content: e.target.value })}
+            placeholder="Enter heading..."
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Level</Label>
+          <Select
+            value={props.level}
+            onValueChange={(value) => updateProps({ level: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="h1">H1</SelectItem>
+              <SelectItem value="h2">H2</SelectItem>
+              <SelectItem value="h3">H3</SelectItem>
+              <SelectItem value="h4">H4</SelectItem>
+              <SelectItem value="h5">H5</SelectItem>
+              <SelectItem value="h6">H6</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </PropertySection>
+
+      <PropertySection title="Typography">
+        <div className="space-y-2">
+          <Label>Font Size</Label>
+          <Input
+            value={props.fontSize || ''}
+            onChange={(e) => updateProps({ fontSize: e.target.value })}
+            placeholder="2rem"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Font Weight</Label>
+          <Input
+            value={props.fontWeight || 'bold'}
+            onChange={(e) => updateProps({ fontWeight: e.target.value })}
+            placeholder="bold, 700"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Font Family</Label>
+          <Input
+            value={props.fontFamily || ''}
+            onChange={(e) => updateProps({ fontFamily: e.target.value })}
+            placeholder="Arial, sans-serif"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Color</Label>
+          <Input
+            type="color"
+            value={props.color || '#000000'}
+            onChange={(e) => updateProps({ color: e.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Alignment</Label>
+          <Select
+            value={props.alignment || 'left'}
+            onValueChange={(value) => updateProps({ alignment: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="left">Left</SelectItem>
+              <SelectItem value="center">Center</SelectItem>
+              <SelectItem value="right">Right</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </PropertySection>
+
+      <PropertySection title="SEO" defaultOpen={false}>
+        <div className="space-y-2">
+          <Label>Anchor ID</Label>
+          <Input
+            value={props.anchorId || ''}
+            onChange={(e) => updateProps({ anchorId: e.target.value })}
+            placeholder="section-id"
+          />
+          <p className="text-xs text-muted-foreground">For anchor links (#section-id)</p>
+        </div>
+      </PropertySection>
+
+      <SpacingControls props={props} updateProps={updateProps} />
+    </>
+  );
+}
+
+// Button Component Properties
+function ButtonProperties({ props, updateProps }: { props: ButtonProps; updateProps: (updates: any) => void }) {
+  return (
+    <>
+      <PropertySection title="Content">
+        <div className="space-y-2">
+          <Label>Text</Label>
+          <Input
+            value={props.text}
+            onChange={(e) => updateProps({ text: e.target.value })}
+            placeholder="Button text"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Variant</Label>
+          <Select
+            value={props.variant || 'default'}
+            onValueChange={(value) => updateProps({ variant: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="default">Default</SelectItem>
+              <SelectItem value="destructive">Destructive</SelectItem>
+              <SelectItem value="outline">Outline</SelectItem>
+              <SelectItem value="secondary">Secondary</SelectItem>
+              <SelectItem value="ghost">Ghost</SelectItem>
+              <SelectItem value="link">Link</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label>Size</Label>
+          <Select
+            value={props.size || 'md'}
+            onValueChange={(value) => updateProps({ size: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="sm">Small</SelectItem>
+              <SelectItem value="md">Medium</SelectItem>
+              <SelectItem value="lg">Large</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Switch
+            checked={props.fullWidth || false}
+            onCheckedChange={(checked) => updateProps({ fullWidth: checked })}
+          />
+          <Label>Full Width</Label>
+        </div>
+      </PropertySection>
+
+      <PropertySection title="Link">
+        <div className="space-y-2">
+          <Label>URL</Label>
+          <Input
+            value={props.href || ''}
+            onChange={(e) => updateProps({ href: e.target.value })}
+            placeholder="https://..."
+          />
+        </div>
+        <div className="flex items-center space-x-2">
+          <Switch
+            checked={props.openInNewTab || false}
+            onCheckedChange={(checked) => updateProps({ openInNewTab: checked })}
+          />
+          <Label>Open in New Tab</Label>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Switch
+            checked={props.disabled || false}
+            onCheckedChange={(checked) => updateProps({ disabled: checked })}
+          />
+          <Label>Disabled</Label>
+        </div>
+      </PropertySection>
+
+      <PropertySection title="Custom Styling" defaultOpen={false}>
+        <div className="space-y-2">
+          <Label>Background Color</Label>
+          <Input
+            type="color"
+            value={props.backgroundColor || '#000000'}
+            onChange={(e) => updateProps({ backgroundColor: e.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Text Color</Label>
+          <Input
+            type="color"
+            value={props.textColor || '#ffffff'}
+            onChange={(e) => updateProps({ textColor: e.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Border Color</Label>
+          <Input
+            type="color"
+            value={props.borderColor || '#000000'}
+            onChange={(e) => updateProps({ borderColor: e.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Border Radius</Label>
+          <Input
+            value={props.borderRadius || ''}
+            onChange={(e) => updateProps({ borderRadius: e.target.value })}
+            placeholder="8px"
+          />
+        </div>
+      </PropertySection>
+
+      <SpacingControls props={props} updateProps={updateProps} />
+    </>
+  );
+}
+
+// Image Component Properties
+function ImageProperties({ props, updateProps }: { props: ImageProps; updateProps: (updates: any) => void }) {
+  return (
+    <>
+      <PropertySection title="Image">
+        <div className="space-y-2">
+          <Label>Image URL</Label>
+          <Input
+            value={props.src || ''}
+            onChange={(e) => updateProps({ src: e.target.value })}
+            placeholder="https://..."
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Alt Text</Label>
+          <Input
+            value={props.alt}
+            onChange={(e) => updateProps({ alt: e.target.value })}
+            placeholder="Description"
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <div className="space-y-1">
+            <Label className="text-xs">Width</Label>
+            <Input
+              value={props.width || ''}
+              onChange={(e) => updateProps({ width: e.target.value })}
+              placeholder="100%"
+              className="h-8 text-xs"
+            />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs">Height</Label>
+            <Input
+              value={props.height || ''}
+              onChange={(e) => updateProps({ height: e.target.value })}
+              placeholder="auto"
+              className="h-8 text-xs"
+            />
+          </div>
+        </div>
+      </PropertySection>
+
+      <PropertySection title="Fit & Position">
+        <div className="space-y-2">
+          <Label>Object Fit</Label>
+          <Select
+            value={props.objectFit || 'cover'}
+            onValueChange={(value) => updateProps({ objectFit: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="cover">Cover</SelectItem>
+              <SelectItem value="contain">Contain</SelectItem>
+              <SelectItem value="fill">Fill</SelectItem>
+              <SelectItem value="none">None</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label>Object Position</Label>
+          <Select
+            value={props.objectPosition || 'center'}
+            onValueChange={(value) => updateProps({ objectPosition: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="center">Center</SelectItem>
+              <SelectItem value="top">Top</SelectItem>
+              <SelectItem value="bottom">Bottom</SelectItem>
+              <SelectItem value="left">Left</SelectItem>
+              <SelectItem value="right">Right</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </PropertySection>
+
+      <PropertySection title="Effects" defaultOpen={false}>
+        <div className="space-y-2">
+          <Label>Border Radius</Label>
+          <Input
+            value={props.borderRadius || ''}
+            onChange={(e) => updateProps({ borderRadius: e.target.value })}
+            placeholder="0px"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Opacity</Label>
+          <Input
+            type="number"
+            min="0"
+            max="1"
+            step="0.1"
+            value={props.opacity ?? 1}
+            onChange={(e) => updateProps({ opacity: parseFloat(e.target.value) })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Filter</Label>
+          <Select
+            value={props.filter || 'none'}
+            onValueChange={(value) => updateProps({ filter: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">None</SelectItem>
+              <SelectItem value="grayscale">Grayscale</SelectItem>
+              <SelectItem value="sepia">Sepia</SelectItem>
+              <SelectItem value="brightness">Brightness</SelectItem>
+              <SelectItem value="contrast">Contrast</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </PropertySection>
+
+      <PropertySection title="Link" defaultOpen={false}>
+        <div className="space-y-2">
+          <Label>URL</Label>
+          <Input
+            value={props.link || ''}
+            onChange={(e) => updateProps({ link: e.target.value })}
+            placeholder="https://..."
+          />
+        </div>
+        <div className="flex items-center space-x-2">
+          <Switch
+            checked={props.openInNewTab || false}
+            onCheckedChange={(checked) => updateProps({ openInNewTab: checked })}
+          />
+          <Label>Open in New Tab</Label>
+        </div>
+      </PropertySection>
+
+      <PropertySection title="Performance" defaultOpen={false}>
+        <div className="space-y-2">
+          <Label>Loading</Label>
+          <Select
+            value={props.loading || 'lazy'}
+            onValueChange={(value) => updateProps({ loading: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="lazy">Lazy</SelectItem>
+              <SelectItem value="eager">Eager</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </PropertySection>
+
+      <SpacingControls props={props} updateProps={updateProps} />
+    </>
+  );
+}
+
+// Divider Component Properties
+function DividerProperties({ props, updateProps }: { props: DividerProps; updateProps: (updates: any) => void }) {
+  return (
+    <>
+      <PropertySection title="Style">
+        <div className="space-y-2">
+          <Label>Line Style</Label>
+          <Select
+            value={props.style || 'solid'}
+            onValueChange={(value) => updateProps({ style: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="solid">Solid</SelectItem>
+              <SelectItem value="dashed">Dashed</SelectItem>
+              <SelectItem value="dotted">Dotted</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label>Thickness</Label>
+          <Input
+            value={props.thickness || '1px'}
+            onChange={(e) => updateProps({ thickness: e.target.value })}
+            placeholder="1px"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Color</Label>
+          <Input
+            type="color"
+            value={props.color || '#000000'}
+            onChange={(e) => updateProps({ color: e.target.value })}
+          />
+        </div>
+        <div className="flex items-center space-x-2">
+          <Switch
+            checked={props.gradient || false}
+            onCheckedChange={(checked) => updateProps({ gradient: checked })}
+          />
+          <Label>Gradient Effect</Label>
+        </div>
+      </PropertySection>
+
+      <PropertySection title="Layout">
+        <div className="space-y-2">
+          <Label>Width</Label>
+          <Input
+            value={props.width || '100%'}
+            onChange={(e) => updateProps({ width: e.target.value })}
+            placeholder="100%, 50%, 200px"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Alignment</Label>
+          <Select
+            value={props.alignment || 'center'}
+            onValueChange={(value) => updateProps({ alignment: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="left">Left</SelectItem>
+              <SelectItem value="center">Center</SelectItem>
+              <SelectItem value="right">Right</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </PropertySection>
+
+      <SpacingControls props={props} updateProps={updateProps} />
+    </>
+  );
+}
+
+// Container Component Properties
+function ContainerProperties({ props, updateProps }: { props: ContainerProps; updateProps: (updates: any) => void }) {
+  return (
+    <>
+      <PropertySection title="Layout">
+        <div className="space-y-2">
+          <Label>Max Width</Label>
+          <Input
+            value={props.maxWidth || '1200px'}
+            onChange={(e) => updateProps({ maxWidth: e.target.value })}
+            placeholder="1200px"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Min Height</Label>
+          <Input
+            value={props.minHeight || ''}
+            onChange={(e) => updateProps({ minHeight: e.target.value })}
+            placeholder="auto"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Display</Label>
+          <Select
+            value={props.display || 'block'}
+            onValueChange={(value) => updateProps({ display: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="block">Block</SelectItem>
+              <SelectItem value="flex">Flex</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        {props.display === 'flex' && (
+          <>
+            <div className="space-y-2">
+              <Label>Align Items</Label>
+              <Select
+                value={props.alignItems || 'start'}
+                onValueChange={(value) => updateProps({ alignItems: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="start">Start</SelectItem>
+                  <SelectItem value="center">Center</SelectItem>
+                  <SelectItem value="end">End</SelectItem>
+                  <SelectItem value="stretch">Stretch</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Justify Content</Label>
+              <Select
+                value={props.justifyContent || 'start'}
+                onValueChange={(value) => updateProps({ justifyContent: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="start">Start</SelectItem>
+                  <SelectItem value="center">Center</SelectItem>
+                  <SelectItem value="end">End</SelectItem>
+                  <SelectItem value="space-between">Space Between</SelectItem>
+                  <SelectItem value="space-around">Space Around</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </>
+        )}
+      </PropertySection>
+
+      <PropertySection title="Background">
+        <div className="space-y-2">
+          <Label>Background Color</Label>
+          <Input
+            type="color"
+            value={props.backgroundColor || '#ffffff'}
+            onChange={(e) => updateProps({ backgroundColor: e.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Background Image URL</Label>
+          <Input
+            value={props.backgroundImage || ''}
+            onChange={(e) => updateProps({ backgroundImage: e.target.value })}
+            placeholder="https://..."
+          />
+        </div>
+        {props.backgroundImage && (
+          <>
+            <div className="space-y-2">
+              <Label>Background Size</Label>
+              <Select
+                value={props.backgroundSize || 'cover'}
+                onValueChange={(value) => updateProps({ backgroundSize: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="cover">Cover</SelectItem>
+                  <SelectItem value="contain">Contain</SelectItem>
+                  <SelectItem value="auto">Auto</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Background Position</Label>
+              <Select
+                value={props.backgroundPosition || 'center'}
+                onValueChange={(value) => updateProps({ backgroundPosition: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="center">Center</SelectItem>
+                  <SelectItem value="top">Top</SelectItem>
+                  <SelectItem value="bottom">Bottom</SelectItem>
+                  <SelectItem value="left">Left</SelectItem>
+                  <SelectItem value="right">Right</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </>
+        )}
+      </PropertySection>
+
+      <PropertySection title="Border & Effects" defaultOpen={false}>
+        <div className="space-y-2">
+          <Label>Border</Label>
+          <Input
+            value={props.border || ''}
+            onChange={(e) => updateProps({ border: e.target.value })}
+            placeholder="1px solid #000"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Border Radius</Label>
+          <Input
+            value={props.borderRadius || ''}
+            onChange={(e) => updateProps({ borderRadius: e.target.value })}
+            placeholder="8px"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Shadow</Label>
+          <Input
+            value={props.shadow || ''}
+            onChange={(e) => updateProps({ shadow: e.target.value })}
+            placeholder="0 2px 4px rgba(0,0,0,0.1)"
+          />
+        </div>
+      </PropertySection>
+
+      <SpacingControls props={props} updateProps={updateProps} />
+    </>
+  );
+}
+
+// Grid Component Properties
+function GridProperties({ props, updateProps }: { props: GridProps; updateProps: (updates: any) => void }) {
+  return (
+    <>
+      <PropertySection title="Grid Layout">
+        <div className="space-y-2">
+          <Label>Columns</Label>
+          <Input
+            type="number"
+            value={props.columns}
+            onChange={(e) => updateProps({ columns: parseInt(e.target.value) })}
+            min={1}
+            max={12}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Gap</Label>
+          <Input
+            value={props.gap || '1rem'}
+            onChange={(e) => updateProps({ gap: e.target.value })}
+            placeholder="1rem"
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <div className="space-y-1">
+            <Label className="text-xs">Row Gap</Label>
+            <Input
+              value={props.rowGap || ''}
+              onChange={(e) => updateProps({ rowGap: e.target.value })}
+              placeholder="1rem"
+              className="h-8 text-xs"
+            />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs">Column Gap</Label>
+            <Input
+              value={props.columnGap || ''}
+              onChange={(e) => updateProps({ columnGap: e.target.value })}
+              placeholder="1rem"
+              className="h-8 text-xs"
+            />
+          </div>
+        </div>
+      </PropertySection>
+
+      <PropertySection title="Alignment" defaultOpen={false}>
+        <div className="space-y-2">
+          <Label>Align Items</Label>
+          <Select
+            value={props.alignItems || 'stretch'}
+            onValueChange={(value) => updateProps({ alignItems: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="start">Start</SelectItem>
+              <SelectItem value="center">Center</SelectItem>
+              <SelectItem value="end">End</SelectItem>
+              <SelectItem value="stretch">Stretch</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label>Justify Items</Label>
+          <Select
+            value={props.justifyItems || 'stretch'}
+            onValueChange={(value) => updateProps({ justifyItems: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="start">Start</SelectItem>
+              <SelectItem value="center">Center</SelectItem>
+              <SelectItem value="end">End</SelectItem>
+              <SelectItem value="stretch">Stretch</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </PropertySection>
+
+      <SpacingControls props={props} updateProps={updateProps} />
+    </>
+  );
+}
+
+// Column Component Properties
+function ColumnProperties({ props, updateProps }: { props: ColumnProps; updateProps: (updates: any) => void }) {
+  return (
+    <>
+      <PropertySection title="Column Layout">
+        <div className="space-y-2">
+          <Label>Span</Label>
+          <Input
+            type="number"
+            value={props.span || 1}
+            onChange={(e) => updateProps({ span: parseInt(e.target.value) })}
+            min={1}
+            max={12}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Offset</Label>
+          <Input
+            type="number"
+            value={props.offset || 0}
+            onChange={(e) => updateProps({ offset: parseInt(e.target.value) })}
+            min={0}
+            max={11}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Order</Label>
+          <Input
+            type="number"
+            value={props.order || 0}
+            onChange={(e) => updateProps({ order: parseInt(e.target.value) })}
+          />
+        </div>
+      </PropertySection>
+
+      <PropertySection title="Styling" defaultOpen={false}>
+        <div className="space-y-2">
+          <Label>Background Color</Label>
+          <Input
+            type="color"
+            value={props.backgroundColor || '#ffffff'}
+            onChange={(e) => updateProps({ backgroundColor: e.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Border</Label>
+          <Input
+            value={props.border || ''}
+            onChange={(e) => updateProps({ border: e.target.value })}
+            placeholder="1px solid #000"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Border Radius</Label>
+          <Input
+            value={props.borderRadius || ''}
+            onChange={(e) => updateProps({ borderRadius: e.target.value })}
+            placeholder="8px"
+          />
+        </div>
+      </PropertySection>
+
+      <SpacingControls props={props} updateProps={updateProps} />
+    </>
+  );
+}
+
+// Spacer Component Properties
+function SpacerProperties({ props, updateProps }: { props: SpacerProps; updateProps: (updates: any) => void }) {
+  return (
+    <>
+      <PropertySection title="Height">
+        <div className="space-y-2">
+          <Label>Default Height</Label>
+          <Input
+            value={props.height}
+            onChange={(e) => updateProps({ height: e.target.value })}
+            placeholder="2rem"
+          />
+        </div>
+      </PropertySection>
+
+      <PropertySection title="Responsive Heights" defaultOpen={false}>
+        <div className="space-y-2">
+          <Label>Mobile Height</Label>
+          <Input
+            value={props.heightMobile || ''}
+            onChange={(e) => updateProps({ heightMobile: e.target.value })}
+            placeholder="1rem"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Tablet Height</Label>
+          <Input
+            value={props.heightTablet || ''}
+            onChange={(e) => updateProps({ heightTablet: e.target.value })}
+            placeholder="1.5rem"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Desktop Height</Label>
+          <Input
+            value={props.heightDesktop || ''}
+            onChange={(e) => updateProps({ heightDesktop: e.target.value })}
+            placeholder="2rem"
+          />
+        </div>
+      </PropertySection>
+
+      <PropertySection title="Debug" defaultOpen={false}>
+        <div className="flex items-center space-x-2">
+          <Switch
+            checked={props.showDebugOutline || false}
+            onCheckedChange={(checked) => updateProps({ showDebugOutline: checked })}
+          />
+          <Label>Show Debug Outline</Label>
+        </div>
+      </PropertySection>
+
+      <SpacingControls props={props} updateProps={updateProps} />
+    </>
+  );
+}

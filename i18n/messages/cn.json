@@ -1,0 +1,45 @@
+{
+  "common": {
+    "dashboard": "仪表板",
+    "settings": "设置",
+    "language": "语言",
+    "theme": "主题",
+    "appearance": "外观",
+    "notifications": "通知",
+    "welcome": "欢迎"
+  },
+  "settings": {
+    "title": "设置",
+    "description": "管理您的应用程序设置",
+    "appearance": {
+      "title": "外观",
+      "description": "自定义仪表板的外观",
+      "theme": {
+        "title": "主题",
+        "description": "选择仪表板的主题",
+        "light": "浅色",
+        "dark": "深色",
+        "system": "系统"
+      }
+    },
+    "language": {
+      "title": "语言",
+      "description": "选择您的首选语言",
+      "english": "英语",
+      "chinese": "中文"
+    },
+    "notifications": {
+      "title": "通知",
+      "description": "配置您接收通知的方式",
+      "email": "电子邮件通知",
+      "push": "推送通知",
+      "sms": "短信通知"
+    }
+  },
+  "dashboard": {
+    "title": "管理仪表板",
+    "overview": "概览",
+    "stats": "统计",
+    "recent": "最近活动"
+  }
+}

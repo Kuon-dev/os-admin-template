@@ -1,0 +1,45 @@
+{
+  "common": {
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "appearance": "Appearance",
+    "notifications": "Notifications",
+    "welcome": "Welcome"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your application settings",
+    "appearance": {
+      "title": "Appearance",
+      "description": "Customize the look and feel of your dashboard",
+      "theme": {
+        "title": "Theme",
+        "description": "Select the theme for the dashboard",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      }
+    },
+    "language": {
+      "title": "Language",
+      "description": "Select your preferred language",
+      "english": "English",
+      "chinese": "Chinese"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Configure how you receive notifications",
+      "email": "Email notifications",
+      "push": "Push notifications",
+      "sms": "SMS notifications"
+    }
+  },
+  "dashboard": {
+    "title": "Admin Dashboard",
+    "overview": "Overview",
+    "stats": "Statistics",
+    "recent": "Recent Activity"
+  }
+}
