@@ -425,6 +425,7 @@ export interface UIState {
   showGrid: boolean;
   propertiesPanelWidth: number;
   propertiesPanelCollapsed: boolean;
+  activeDropZone: { position: number; parentId?: string } | null;
 }
 
 // Store actions
@@ -459,6 +460,8 @@ export interface PageBuilderActions {
   toggleGrid: () => void;
   setPropertiesPanelWidth: (width: number) => void;
   togglePropertiesPanel: () => void;
+  setActiveDropZone: (position: number, parentId?: string) => void;
+  clearActiveDropZone: () => void;
 }
 
 // Full store state

@@ -40,6 +40,10 @@ export const ComponentRenderer = memo(function ComponentRenderer({
       isDragging: monitor.isDragging(),
     }),
     canDrag: !isPreview,
+    end: () => {
+      // Clear active dropzone when drag ends
+      actions.clearActiveDropZone();
+    },
   });
 
   const handleClick = (e: React.MouseEvent) => {

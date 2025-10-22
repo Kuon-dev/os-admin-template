@@ -58,6 +58,7 @@ const usePageBuilderStore = create<PageBuilderStore>()(
         showGrid: true,
         propertiesPanelWidth: loadFromStorage(STORAGE_KEYS.PROPERTIES_PANEL_WIDTH, 350),
         propertiesPanelCollapsed: loadFromStorage(STORAGE_KEYS.PROPERTIES_PANEL_COLLAPSED, false),
+        activeDropZone: null,
       },
       actions: {
         // Page actions
@@ -310,9 +311,31 @@ const usePageBuilderStore = create<PageBuilderStore>()(
           set((state) => {
             if (!state.currentPage) return state;
 
-            // Find and remove the component
+            // Find the component's current position and parent before removing
             let componentToMove: Component | null = null;
+            let oldPosition = -1;
+            let oldParentId: string | undefined = undefined;
 
+            const findPosition = (comps: Component[], currentPos = 0, parentId?: string): { found: boolean; position: number; parentId?: string } => {
+              for (let i = 0; i < comps.length; i++) {
+                if (comps[i].id === componentId) {
+                  return { found: true, position: currentPos + i, parentId };
+                }
+                if (comps[i].children) {
+                  const result = findPosition(comps[i].children!, 0, comps[i].id);
+                  if (result.found) return result;
+                }
+              }
+              return { found: false, position: -1 };
+            };
+
+            const positionInfo = findPosition(state.currentPage.components);
+            if (positionInfo.found) {
+              oldPosition = positionInfo.position;
+              oldParentId = positionInfo.parentId;
+            }
+
+            // Remove the component
             const removeComponent = (comps: Component[]): Component[] => {
               const result: Component[] = [];
               for (const comp of comps) {
@@ -333,16 +356,24 @@ const usePageBuilderStore = create<PageBuilderStore>()(
 
             if (!componentToMove) return state;
 
+            // Adjust position if moving forward within the same parent
+            // When removing an item, indices shift down by 1, so we need to compensate
+            let adjustedPosition = newPosition;
+            const sameParent = oldParentId === newParentId || (!oldParentId && !newParentId);
+            if (sameParent && oldPosition < newPosition) {
+              adjustedPosition = newPosition - 1;
+            }
+
             // Update parent ID
             componentToMove = { ...componentToMove, parentId: newParentId };
 
-            // Insert at new position
+            // Insert at adjusted position
             if (newParentId) {
               const insertIntoParent = (comps: Component[]): Component[] => {
                 return comps.map((comp) => {
                   if (comp.id === newParentId) {
                     const children = comp.children || [];
-                    children.splice(newPosition, 0, componentToMove!);
+                    children.splice(adjustedPosition, 0, componentToMove!);
                     return { ...comp, children };
                   }
                   if (comp.children) {
@@ -353,7 +384,7 @@ const usePageBuilderStore = create<PageBuilderStore>()(
               };
               components = insertIntoParent(components);
             } else {
-              components.splice(newPosition, 0, componentToMove);
+              components.splice(adjustedPosition, 0, componentToMove);
             }
 
             return {
@@ -537,6 +568,21 @@ const usePageBuilderStore = create<PageBuilderStore>()(
               ui: { ...state.ui, propertiesPanelCollapsed: newCollapsedState },
             };
           });
+        },
+
+        setActiveDropZone: (position: number, parentId?: string) => {
+          set((state) => ({
+            ui: {
+              ...state.ui,
+              activeDropZone: { position, parentId: parentId || undefined }
+            },
+          }));
+        },
+
+        clearActiveDropZone: () => {
+          set((state) => ({
+            ui: { ...state.ui, activeDropZone: null },
+          }));
         },
       },
     }),

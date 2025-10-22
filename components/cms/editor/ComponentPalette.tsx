@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
+import usePageBuilderStore from '@/stores/page-builder-store';
 import type { ComponentType, ComponentPaletteItem } from '@/types/page-builder';
 import {
   Collapsible,
@@ -172,6 +173,7 @@ interface ComponentItemProps {
 
 function ComponentItem({ item, onAddComponent }: ComponentItemProps) {
   const Icon = item.icon;
+  const { actions } = usePageBuilderStore();
 
   const [{ isDragging }, drag] = useDrag({
     type: 'new-component',
@@ -179,6 +181,10 @@ function ComponentItem({ item, onAddComponent }: ComponentItemProps) {
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
+    end: () => {
+      // Clear active dropzone when drag ends
+      actions.clearActiveDropZone();
+    },
   });
 
   return (
