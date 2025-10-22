@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Plus, Edit, Copy, Trash2, Eye, Search } from 'lucide-react';
 import {
   Card,
@@ -34,6 +35,7 @@ import usePageBuilderStore from '@/stores/page-builder-store';
 import type { Page } from '@/types/page-builder';
 
 export default function CMSPagesPage() {
+  const t = useTranslations('cms');
   const router = useRouter();
   const { pages, actions } = usePageBuilderStore();
   const [searchQuery, setSearchQuery] = useState('');
@@ -84,7 +86,7 @@ export default function CMSPagesPage() {
   };
 
   const handleDeletePage = async (pageId: string) => {
-    if (confirm('Are you sure you want to delete this page?')) {
+    if (confirm(t('confirmDelete'))) {
       await actions.deletePage(pageId);
     }
   };
@@ -108,7 +110,7 @@ export default function CMSPagesPage() {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <div className="text-lg font-semibold">Loading pages...</div>
+          <div className="text-lg font-semibold">{t('loading')}</div>
         </div>
       </div>
     );
@@ -118,14 +120,14 @@ export default function CMSPagesPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">CMS Pages</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
           <p className="text-muted-foreground">
-            Manage your website pages with the drag-and-drop page builder
+            {t('description')}
           </p>
         </div>
         <Button onClick={() => setIsCreateDialogOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
-          New Page
+          {t('newPage')}
         </Button>
       </div>
 
@@ -133,15 +135,15 @@ export default function CMSPagesPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>All Pages</CardTitle>
+              <CardTitle>{t('allPages')}</CardTitle>
               <CardDescription>
-                {pages.length} {pages.length === 1 ? 'page' : 'pages'} total
+                {t('pageCount', { count: pages.length })}
               </CardDescription>
             </div>
             <div className="relative w-72">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search pages..."
+                placeholder={t('searchPages')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-8"
@@ -153,7 +155,7 @@ export default function CMSPagesPage() {
           {filteredPages.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground">
-                {searchQuery ? 'No pages found matching your search.' : 'No pages yet. Create your first page to get started.'}
+                {searchQuery ? t('noPagesFound') : t('noPages')}
               </p>
               {!searchQuery && (
                 <Button
@@ -162,7 +164,7 @@ export default function CMSPagesPage() {
                   variant="outline"
                 >
                   <Plus className="mr-2 h-4 w-4" />
-                  Create Your First Page
+                  {t('createFirstPage')}
                 </Button>
               )}
             </div>
@@ -170,11 +172,11 @@ export default function CMSPagesPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Slug</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Last Updated</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>{t('table.name')}</TableHead>
+                  <TableHead>{t('table.slug')}</TableHead>
+                  <TableHead>{t('table.status')}</TableHead>
+                  <TableHead>{t('table.lastUpdated')}</TableHead>
+                  <TableHead className="text-right">{t('table.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -190,7 +192,7 @@ export default function CMSPagesPage() {
                       <Badge
                         variant={page.status === 'published' ? 'default' : 'secondary'}
                       >
-                        {page.status}
+                        {page.status === 'published' ? t('status.published') : t('status.draft')}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -232,31 +234,31 @@ export default function CMSPagesPage() {
       <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create New Page</DialogTitle>
+            <DialogTitle>{t('dialog.createTitle')}</DialogTitle>
             <DialogDescription>
-              Create a new page for your website. The slug will be used in the URL.
+              {t('dialog.createDescription')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="name">Page Name</Label>
+              <Label htmlFor="name">{t('dialog.pageName')}</Label>
               <Input
                 id="name"
-                placeholder="e.g., About Us"
+                placeholder={t('dialog.pageNamePlaceholder')}
                 value={newPageName}
                 onChange={(e) => handleNameChange(e.target.value)}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="slug">Slug</Label>
+              <Label htmlFor="slug">{t('dialog.slug')}</Label>
               <Input
                 id="slug"
-                placeholder="e.g., about-us"
+                placeholder={t('dialog.slugPlaceholder')}
                 value={newPageSlug}
                 onChange={(e) => setNewPageSlug(e.target.value)}
               />
               <p className="text-xs text-muted-foreground">
-                URL: /{newPageSlug || 'your-page-slug'}
+                {t('dialog.urlPreview', { slug: newPageSlug || 'your-page-slug' })}
               </p>
             </div>
           </div>
@@ -265,13 +267,13 @@ export default function CMSPagesPage() {
               variant="outline"
               onClick={() => setIsCreateDialogOpen(false)}
             >
-              Cancel
+              {t('dialog.cancel')}
             </Button>
             <Button
               onClick={handleCreatePage}
               disabled={!newPageName || !newPageSlug}
             >
-              Create Page
+              {t('dialog.createPage')}
             </Button>
           </DialogFooter>
         </DialogContent>

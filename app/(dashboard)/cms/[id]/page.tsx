@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { ImperativePanelHandle } from 'react-resizable-panels';
@@ -17,6 +18,7 @@ import {
 } from '@/components/ui/resizable';
 
 export default function CMSEditorPage() {
+  const t = useTranslations('cms.editor');
   const params = useParams();
   const router = useRouter();
   const pageId = params.id as string;
@@ -49,7 +51,7 @@ export default function CMSEditorPage() {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
-          <div className="text-lg font-semibold">Loading page...</div>
+          <div className="text-lg font-semibold">{t('loading')}</div>
         </div>
       </div>
     );
