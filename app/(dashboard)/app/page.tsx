@@ -15,28 +15,28 @@ export default function DashboardPage() {
 
   const stats = [
     {
-      title: "Total Users",
+      title: t('metrics.totalUsers'),
       value: "2,543",
       change: "+12.5%",
       icon: Users,
       color: "text-primary",
     },
     {
-      title: "Active Sessions",
+      title: t('metrics.activeSessions'),
       value: "1,234",
       change: "+5.2%",
       icon: Activity,
       color: "text-secondary",
     },
     {
-      title: "Revenue",
+      title: t('metrics.revenue'),
       value: "$45,231",
       change: "+18.3%",
       icon: CreditCard,
       color: "text-accent",
     },
     {
-      title: "Growth",
+      title: t('metrics.growth'),
       value: "24.5%",
       change: "+4.1%",
       icon: TrendingUp,
@@ -65,8 +65,7 @@ export default function DashboardPage() {
               <CardContent>
                 <div className="text-2xl font-bold">{stat.value}</div>
                 <p className="text-xs text-muted-foreground">
-                  <span className="text-primary">{stat.change}</span> from last
-                  month
+                  <span className="text-primary">{stat.change}</span> {t('metrics.changeFromLastMonth')}
                 </p>
               </CardContent>
             </Card>
@@ -79,19 +78,19 @@ export default function DashboardPage() {
           <CardHeader>
             <CardTitle>{t('stats')}</CardTitle>
             <CardDescription>
-              Overview of your dashboard statistics
+              {t('statsDescription')}
             </CardDescription>
           </CardHeader>
           <CardContent className="pl-2">
             <div className="h-[200px] flex items-center justify-center text-muted-foreground">
-              Chart placeholder - Add your charts here
+              {t('chartPlaceholder')}
             </div>
           </CardContent>
         </Card>
         <Card className="col-span-3">
           <CardHeader>
             <CardTitle>{t('recent')}</CardTitle>
-            <CardDescription>Recent activity on your dashboard</CardDescription>
+            <CardDescription>{t('recentDescription')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -100,10 +99,10 @@ export default function DashboardPage() {
                   <div className="h-9 w-9 rounded-full bg-muted" />
                   <div className="flex-1 space-y-1">
                     <p className="text-sm font-medium leading-none">
-                      Activity {i}
+                      {t('activity.title')} {i}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      {i} hours ago
+                      {i} {t('activity.hoursAgo')}
                     </p>
                   </div>
                 </div>
