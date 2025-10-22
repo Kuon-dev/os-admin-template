@@ -31,7 +31,8 @@
     },
     "cms": {
       "title": "CMS",
-      "pages": "Pages"
+      "pages": "Pages",
+      "domainSettings": "Domain Settings"
     },
     "settings": {
       "title": "Settings",
@@ -134,6 +135,71 @@
     "pageCount": "{count} {count, plural, one {page} other {pages}} total",
     "editor": {
       "loading": "Loading page..."
+    },
+    "commandPalette": {
+      "placeholder": "Type a command or search...",
+      "noResults": "No results found.",
+      "actions": "Actions",
+      "settings": "CMS Settings",
+      "viewAll": "View All Pages",
+      "pages": "Pages"
+    }
+  },
+  "domainSettings": {
+    "title": "Domain Settings",
+    "description": "Configure domain, SEO, URL structure, and analytics settings for your CMS",
+    "saveButton": "Save Changes",
+    "saved": "Domain settings saved successfully!",
+    "domain": {
+      "title": "Domain Configuration",
+      "description": "Manage your primary and custom domains",
+      "primaryDomain": "Primary Domain",
+      "primaryDomainPlaceholder": "example.com",
+      "primaryDomainDescription": "The main domain for your CMS content",
+      "customDomains": "Custom Domains",
+      "customDomainsPlaceholder": "blog.example.com, docs.example.com",
+      "customDomainsDescription": "Add custom domains (comma-separated)"
+    },
+    "seo": {
+      "title": "SEO Defaults",
+      "description": "Set default SEO metadata for all pages",
+      "titlePattern": "Page Title Pattern",
+      "titlePatternPlaceholder": "'{'page_title'}' | My Site",
+      "titlePatternDescription": "Use '{'page_title'}' as placeholder",
+      "metaDescription": "Default Meta Description",
+      "metaDescriptionPlaceholder": "Enter default meta description...",
+      "metaDescriptionDescription": "Fallback description for pages without custom meta",
+      "ogImage": "Default Open Graph Image",
+      "ogImagePlaceholder": "https://example.com/og-image.jpg",
+      "ogImageDescription": "Default social sharing image URL",
+      "favicon": "Favicon URL",
+      "faviconPlaceholder": "/favicon.ico",
+      "faviconDescription": "Path to your site's favicon"
+    },
+    "url": {
+      "title": "URL Structure",
+      "description": "Configure URL formats and redirect rules",
+      "slugPattern": "URL Slug Pattern",
+      "slugPatternPlaceholder": "/blog/'{'slug'}'",
+      "slugPatternDescription": "Pattern for page URLs. Use '{'slug'}' as placeholder",
+      "trailingSlash": "Use Trailing Slash",
+      "trailingSlashDescription": "Add trailing slash to all URLs (/page/)",
+      "redirects": "301 Redirect Rules",
+      "redirectsPlaceholder": "/old-page -> /new-page\n/another -> /different",
+      "redirectsDescription": "One rule per line (old-path -> new-path)"
+    },
+    "analytics": {
+      "title": "Analytics & Tracking",
+      "description": "Integrate analytics and tracking tools",
+      "gaId": "Google Analytics ID",
+      "gaIdPlaceholder": "G-XXXXXXXXXX or UA-XXXXXXXXX-X",
+      "gaIdDescription": "Your Google Analytics measurement ID",
+      "gtmId": "Google Tag Manager ID",
+      "gtmIdPlaceholder": "GTM-XXXXXXX",
+      "gtmIdDescription": "Your Google Tag Manager container ID",
+      "customScripts": "Custom Tracking Scripts",
+      "customScriptsPlaceholder": "'<'script'>'/* Your custom tracking code */'<'/script'>'",
+      "customScriptsDescription": "Add custom analytics or tracking code"
     }
   }
 }

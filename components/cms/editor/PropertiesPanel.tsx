@@ -1,8 +1,9 @@
 "use client";
 
-import { ChevronRight, Settings } from 'lucide-react';
+import { ChevronRight, Settings, FileQuestion, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription } from '@/components/ui/empty';
 import usePageBuilderStore from '@/stores/page-builder-store';
 import { getPropertiesComponent } from './properties/PropertiesRegistry';
 
@@ -43,7 +44,7 @@ export function PropertiesPanel() {
   // Collapsed state - show narrow strip with expand button
   if (ui.propertiesPanelCollapsed) {
     return (
-      <div className="flex flex-col items-center h-full bg-background border-l">
+      <div data-properties-panel="true" className="flex flex-col items-center h-full bg-background border-l">
         <Button
           variant="ghost"
           size="sm"
@@ -67,7 +68,7 @@ export function PropertiesPanel() {
 
   // Expanded state - show full panel
   return (
-    <div className="flex flex-col h-full bg-background border-l overflow-hidden">
+    <div data-properties-panel="true" className="flex flex-col h-full bg-background border-l overflow-hidden">
       {/* Header with collapse button */}
       <div className="flex items-center justify-between p-3 border-b bg-muted/30 flex-shrink-0">
         <div className="flex items-center gap-2">
@@ -89,8 +90,18 @@ export function PropertiesPanel() {
       <div className="flex-1 overflow-y-auto overflow-x-hidden">
         {!selectedComponent ? (
           // No component selected
-          <div className="flex flex-col items-center justify-center h-full p-8 text-center text-muted-foreground">
-            <p className="text-sm">Select a component to edit its properties</p>
+          <div className="flex items-center justify-center h-full p-4">
+            <Empty>
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <Layers />
+                </EmptyMedia>
+                <EmptyTitle>No Component Selected</EmptyTitle>
+                <EmptyDescription>
+                  Select a component from the canvas to edit its properties
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
           </div>
         ) : (() => {
           // Get the properties component from registry
@@ -99,13 +110,20 @@ export function PropertiesPanel() {
           // No properties panel registered for this component type
           if (!PropertiesComponent) {
             return (
-              <div className="flex flex-col items-center justify-center h-full p-8 text-center text-muted-foreground">
-                <p className="text-sm mb-2">
-                  No properties available for <span className="font-medium">{selectedComponent.type}</span>
-                </p>
-                <p className="text-xs text-muted-foreground/70">
-                  Property panel needs to be created and registered
-                </p>
+              <div className="flex items-center justify-center h-full p-4">
+                <Empty>
+                  <EmptyHeader>
+                    <EmptyMedia variant="icon">
+                      <FileQuestion />
+                    </EmptyMedia>
+                    <EmptyTitle>No Properties Available</EmptyTitle>
+                    <EmptyDescription>
+                      The <span className="font-medium">{selectedComponent.type}</span> component doesn't have a property panel yet.
+                      <br />
+                      <span className="text-xs">A property panel needs to be created and registered.</span>
+                    </EmptyDescription>
+                  </EmptyHeader>
+                </Empty>
               </div>
             );
           }

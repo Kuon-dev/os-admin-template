@@ -51,13 +51,13 @@ export default async function DashboardLayout({
               </Breadcrumb>
             </div>
           </header>
-          <div className="relative flex flex-1 flex-col gap-4 p-4 pt-0 overflow-hidden">
+          <div className="relative flex flex-1 flex-col gap-4 p-4 pt-0 overflow-auto">
             <GridPattern
               width={30}
               height={30}
               className="fill-muted/50 stroke-muted/40"
             />
-            <div className="relative z-10 h-full">
+            <div className="relative z-10">
               {children}
             </div>
           </div>

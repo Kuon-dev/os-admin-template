@@ -1,12 +1,13 @@
 "use client";
 
-import { memo, useRef } from 'react';
+import { memo, useRef, useEffect } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import type { Identifier } from 'dnd-core';
 import { cn } from '@/lib/utils';
 import usePageBuilderStore from '@/stores/page-builder-store';
 import type { Component } from '@/types/page-builder';
-import { GripVertical } from 'lucide-react';
+import { GripVertical, Tag, Copy, Trash2 } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 // Component imports
 import { TextComponent } from './basic/TextComponent';
@@ -63,6 +64,41 @@ export const ComponentRenderer = memo(function ComponentRenderer({
     actions.duplicateComponent(component.id);
   };
 
+  // Handle ESC key to deselect component
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isSelected) {
+        actions.selectComponent(null);
+      }
+    };
+
+    if (isSelected) {
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [isSelected, actions]);
+
+  // Handle click outside to deselect component
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (isSelected && ref.current && !ref.current.contains(e.target as Node)) {
+        // Check if click is within properties panel
+        const target = e.target as HTMLElement;
+        const isInPropertiesPanel = target.closest('[data-properties-panel="true"]');
+
+        // Only deselect if not clicking in properties panel
+        if (!isInPropertiesPanel) {
+          actions.selectComponent(null);
+        }
+      }
+    };
+
+    if (isSelected) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isSelected, actions]);
+
   // Combine refs
   preview(ref);
 
@@ -111,25 +147,30 @@ export const ComponentRenderer = memo(function ComponentRenderer({
     >
       {/* Component Controls */}
       {isSelected && (
-        <div className="absolute -top-8 left-0 flex items-center gap-1 bg-primary text-primary-foreground px-2 py-1 rounded text-xs z-10">
+        <div className="absolute -top-8 left-0 flex items-center gap-0 bg-background border border-border shadow-md rounded text-xs z-10 overflow-hidden">
           <div
             ref={drag}
-            className="cursor-grab active:cursor-grabbing hover:bg-primary-foreground/20 px-1 rounded flex items-center"
+            className="cursor-grab active:cursor-grabbing bg-muted hover:bg-muted/80 px-2 py-1.5 flex items-center border-r border-border transition-colors"
           >
-            <GripVertical className="h-3 w-3" />
+            <GripVertical className="h-3 w-3 text-muted-foreground" />
           </div>
-          <span className="font-medium">{component.type}</span>
+          <div className="px-3 py-1.5 bg-muted/30 border-r border-border flex items-center gap-1.5 pointer-events-none">
+            <Tag className="h-3 w-3 text-muted-foreground" />
+            <span className="font-mono text-[11px] text-muted-foreground uppercase tracking-wide">{component.type}</span>
+          </div>
           <button
             onClick={handleDuplicate}
-            className="ml-2 hover:bg-primary-foreground/20 px-1 rounded"
+            title="Duplicate component"
+            className="px-2 py-1.5 hover:bg-accent hover:text-accent-foreground border-r border-border transition-colors text-foreground"
           >
-            Duplicate
+            <Copy className="h-3.5 w-3.5" />
           </button>
           <button
             onClick={handleDelete}
-            className="hover:bg-destructive px-1 rounded"
+            title="Delete component"
+            className="px-2 py-1.5 hover:bg-destructive hover:text-destructive-foreground transition-colors text-foreground"
           >
-            Delete
+            <Trash2 className="h-3.5 w-3.5" />
           </button>
         </div>
       )}

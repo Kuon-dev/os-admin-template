@@ -80,6 +80,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             title: t('cms.pages'),
             url: "/cms",
           },
+          {
+            title: t('cms.domainSettings'),
+            url: "/cms/domain-settings",
+          },
         ],
       },
       {

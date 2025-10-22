@@ -31,7 +31,8 @@
     },
     "cms": {
       "title": "内容管理",
-      "pages": "页面"
+      "pages": "页面",
+      "domainSettings": "域名设置"
     },
     "settings": {
       "title": "设置",
@@ -134,6 +135,71 @@
     "pageCount": "共 {count} 个页面",
     "editor": {
       "loading": "加载页面中..."
+    },
+    "commandPalette": {
+      "placeholder": "输入命令或搜索...",
+      "noResults": "未找到结果。",
+      "actions": "操作",
+      "settings": "CMS 设置",
+      "viewAll": "查看所有页面",
+      "pages": "页面"
+    }
+  },
+  "domainSettings": {
+    "title": "域名设置",
+    "description": "配置您的 CMS 的域名、SEO、URL 结构和分析设置",
+    "saveButton": "保存更改",
+    "saved": "域名设置已成功保存！",
+    "domain": {
+      "title": "域名配置",
+      "description": "管理您的主域名和自定义域名",
+      "primaryDomain": "主域名",
+      "primaryDomainPlaceholder": "example.com",
+      "primaryDomainDescription": "您的 CMS 内容的主域名",
+      "customDomains": "自定义域名",
+      "customDomainsPlaceholder": "blog.example.com, docs.example.com",
+      "customDomainsDescription": "添加自定义域名（逗号分隔）"
+    },
+    "seo": {
+      "title": "SEO 默认设置",
+      "description": "为所有页面设置默认 SEO 元数据",
+      "titlePattern": "页面标题模式",
+      "titlePatternPlaceholder": "'{'page_title'}' | 我的网站",
+      "titlePatternDescription": "使用 '{'page_title'}' 作为占位符",
+      "metaDescription": "默认元描述",
+      "metaDescriptionPlaceholder": "输入默认元描述...",
+      "metaDescriptionDescription": "没有自定义元数据的页面的后备描述",
+      "ogImage": "默认 Open Graph 图片",
+      "ogImagePlaceholder": "https://example.com/og-image.jpg",
+      "ogImageDescription": "默认社交分享图片 URL",
+      "favicon": "网站图标 URL",
+      "faviconPlaceholder": "/favicon.ico",
+      "faviconDescription": "您网站的网站图标路径"
+    },
+    "url": {
+      "title": "URL 结构",
+      "description": "配置 URL 格式和重定向规则",
+      "slugPattern": "URL 别名模式",
+      "slugPatternPlaceholder": "/blog/'{'slug'}'",
+      "slugPatternDescription": "页面 URL 的模式。使用 '{'slug'}' 作为占位符",
+      "trailingSlash": "使用尾部斜杠",
+      "trailingSlashDescription": "为所有 URL 添加尾部斜杠 (/page/)",
+      "redirects": "301 重定向规则",
+      "redirectsPlaceholder": "/old-page -> /new-page\n/another -> /different",
+      "redirectsDescription": "每行一条规则（旧路径 -> 新路径）"
+    },
+    "analytics": {
+      "title": "分析与跟踪",
+      "description": "集成分析和跟踪工具",
+      "gaId": "Google Analytics ID",
+      "gaIdPlaceholder": "G-XXXXXXXXXX 或 UA-XXXXXXXXX-X",
+      "gaIdDescription": "您的 Google Analytics 测量 ID",
+      "gtmId": "Google Tag Manager ID",
+      "gtmIdPlaceholder": "GTM-XXXXXXX",
+      "gtmIdDescription": "您的 Google Tag Manager 容器 ID",
+      "customScripts": "自定义跟踪脚本",
+      "customScriptsPlaceholder": "'<'script'>'/* 您的自定义跟踪代码 */'<'/script'>'",
+      "customScriptsDescription": "添加自定义分析或跟踪代码"
     }
   }
 }

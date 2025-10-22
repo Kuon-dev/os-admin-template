@@ -114,6 +114,31 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* 4-Point Grid Spacing System (Mac-OS inspired) */
+  --spacing-1: 4px;    /* 1 unit */
+  --spacing-2: 8px;    /* 2 units */
+  --spacing-3: 12px;   /* 3 units */
+  --spacing-4: 16px;   /* 4 units */
+  --spacing-5: 20px;   /* 5 units */
+  --spacing-6: 24px;   /* 6 units */
+  --spacing-8: 32px;   /* 8 units */
+  --spacing-10: 40px;  /* 10 units */
+  --spacing-12: 48px;  /* 12 units */
+  --spacing-16: 64px;  /* 16 units */
+  --spacing-20: 80px;  /* 20 units */
+  --spacing-24: 96px;  /* 24 units */
+
+  /* Component Palette Focus & Active States */
+  --palette-active-border: hsl(var(--primary));
+  --palette-active-bg: hsl(var(--accent) / 0.3);
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --focus-ring-color: hsl(var(--ring));
+  --component-item-hover: hsl(var(--accent));
+  --component-item-focus: hsl(var(--accent) / 0.8);
+  --component-item-active: hsl(var(--primary) / 0.1);
+  --search-highlight: hsl(var(--primary) / 0.2);
 }
 
 @layer base {
@@ -130,4 +155,21 @@
   background-image: linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
     linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
   background-size: 20px 20px;
+}
+
+/* Focus Ring Utilities */
+.focus-ring {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.focus-visible-ring:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Component Palette Active State */
+.palette-active {
+  border-left: 3px solid var(--palette-active-border);
+  background-color: var(--palette-active-bg);
 }
