@@ -2,22 +2,14 @@
 
 import * as React from "react"
 import {
-  BookOpen,
   Bot,
   Command,
   FileText,
-  Frame,
-  LifeBuoy,
-  Map,
-  PieChart,
-  Send,
   Settings2,
   SquareTerminal,
 } from "lucide-react"
 
 import { NavMain } from "@/components/sidebar/nav-main"
-import { NavProjects } from "@/components/sidebar/nav-projects"
-import { NavSecondary } from "@/components/sidebar/nav-secondary"
 import { NavUser } from "@/components/sidebar/nav-user"
 import {
   Sidebar,
@@ -87,29 +79,6 @@ const data = {
       ],
     },
     {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "/app/docs",
-        },
-        {
-          title: "Get Started",
-          url: "/app/docs/get-started",
-        },
-        {
-          title: "Tutorials",
-          url: "/app/docs/tutorials",
-        },
-        {
-          title: "Changelog",
-          url: "/app/docs/changelog",
-        },
-      ],
-    },
-    {
       title: "Settings",
       url: "/app/settings",
       icon: Settings2,
@@ -131,35 +100,6 @@ const data = {
           url: "/app/settings/limits",
         },
       ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Support",
-      url: "#",
-      icon: LifeBuoy,
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send,
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
     },
   ],
 }
@@ -186,8 +126,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
