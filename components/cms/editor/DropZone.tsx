@@ -83,12 +83,12 @@ export function DropZone({ position, parentId, className }: DropZoneProps) {
           className={cn(
             'absolute inset-0 rounded-lg flex items-center justify-center transition-all duration-200',
             shouldExpand
-              ? 'border-2 border-dashed border-primary bg-primary/10 animate-in fade-in'
-              : 'border-2 border-dashed border-primary/30 bg-primary/5'
+              ? 'border-2 border-dashed border-blue-500 bg-blue-500/20 animate-in fade-in shadow-lg shadow-blue-500/20'
+              : 'border-2 border-dashed border-blue-400/50 bg-blue-400/10'
           )}
         >
           {shouldExpand && (
-            <span className="text-sm font-medium text-primary animate-in fade-in duration-150">
+            <span className="text-sm font-medium text-blue-600 dark:text-blue-400 animate-in fade-in duration-150">
               Drop here
             </span>
           )}

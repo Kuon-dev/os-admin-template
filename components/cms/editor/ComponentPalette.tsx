@@ -173,6 +173,7 @@ function ComponentItem({ item, onAddComponent, isFocused, onFocus, searchQuery }
   const Icon = item.icon;
   const { actions } = usePageBuilderStore();
   const [justAdded, setJustAdded] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const [{ isDragging }, drag] = useDrag({
     type: 'new-component',
@@ -185,6 +186,13 @@ function ComponentItem({ item, onAddComponent, isFocused, onFocus, searchQuery }
       actions.clearActiveDropZone();
     },
   });
+
+  // Attach drag to the button ref
+  useEffect(() => {
+    if (buttonRef.current) {
+      drag(buttonRef.current);
+    }
+  }, [drag]);
 
   const handleClick = () => {
     onAddComponent(item.type);
@@ -218,8 +226,8 @@ function ComponentItem({ item, onAddComponent, isFocused, onFocus, searchQuery }
       <HoverCardTrigger asChild>
         <Tooltip>
           <TooltipTrigger asChild>
-            <motion.button
-              ref={drag}
+            <button
+              ref={buttonRef}
               type="button"
               role="option"
               aria-label={`Add ${item.label} component to canvas`}
@@ -230,10 +238,9 @@ function ComponentItem({ item, onAddComponent, isFocused, onFocus, searchQuery }
                 'text-left focus-visible-ring',
                 'min-h-[44px]', // Touch-friendly target
                 isDragging && 'opacity-50 cursor-grabbing',
-                !isDragging && 'cursor-grab',
+                !isDragging && 'cursor-grab hover:bg-[var(--component-item-hover)]',
                 isFocused && 'bg-[var(--component-item-focus)] ring-2 ring-primary/20',
-                !isFocused && 'hover:bg-[var(--component-item-hover)]',
-                justAdded && 'bg-[var(--component-item-active)]'
+                justAdded && 'bg-[var(--component-item-active)] scale-105'
               )}
               style={{
                 padding: 'var(--spacing-4)',
@@ -242,17 +249,6 @@ function ComponentItem({ item, onAddComponent, isFocused, onFocus, searchQuery }
               onClick={handleClick}
               onFocus={onFocus}
               tabIndex={0}
-              whileHover={!isDragging ? { scale: 1.02 } : undefined}
-              whileTap={{ scale: 0.98 }}
-              animate={justAdded ? {
-                scale: [1, 1.05, 1],
-                backgroundColor: [
-                  'var(--component-item-active)',
-                  'var(--palette-active-bg)',
-                  'transparent'
-                ]
-              } : undefined}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
             >
               <GripVertical className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               <div
@@ -272,7 +268,7 @@ function ComponentItem({ item, onAddComponent, isFocused, onFocus, searchQuery }
               <span className="text-sm font-medium flex-1">
                 {highlightText(item.label)}
               </span>
-            </motion.button>
+            </button>
           </TooltipTrigger>
           <TooltipContent side="right">
             <p>Drag to canvas, click to add, or press Enter</p>
