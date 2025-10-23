@@ -1,6 +1,42 @@
 import { Product, CategoryInfo, DailySpecial } from '@/types/product';
 
-// Category definitions
+// Category definitions with icons for admin dashboard
+import { Croissant, Wheat, Cake, Sparkles, Star } from 'lucide-react';
+
+export const PRODUCT_CATEGORIES: (CategoryInfo & { icon?: any })[] = [
+  {
+    id: 'breads',
+    name: 'Breads',
+    icon: Wheat,
+    description: 'Artisan baked breads',
+  },
+  {
+    id: 'pastries',
+    name: 'Pastries',
+    icon: Cake,
+    description: 'Sweet delights',
+  },
+  {
+    id: 'viennoiseries',
+    name: 'Viennoiseries',
+    icon: Croissant,
+    description: 'Classic French pastries',
+  },
+  {
+    id: 'cakes',
+    name: 'Cakes',
+    icon: Sparkles,
+    description: 'Celebration cakes',
+  },
+  {
+    id: 'specials',
+    name: 'Daily Specials',
+    icon: Star,
+    description: 'Today\'s featured items',
+  },
+];
+
+// Category definitions (original for landing page)
 export const categories: CategoryInfo[] = [
   {
     id: 'all',
@@ -52,6 +88,7 @@ export const products: Product[] = [
     dietaryTags: ['vegetarian'],
     allergens: ['gluten', 'dairy'],
     ingredients: ['flour', 'butter', 'yeast', 'sugar', 'salt', 'milk'],
+    stockRemaining: 45,
   },
   {
     id: '2',
@@ -64,6 +101,7 @@ export const products: Product[] = [
     dietaryTags: ['vegetarian'],
     allergens: ['gluten', 'dairy'],
     ingredients: ['flour', 'butter', 'dark chocolate', 'yeast', 'sugar', 'salt'],
+    stockRemaining: 38,
   },
   {
     id: '3',
@@ -92,6 +130,7 @@ export const products: Product[] = [
     allergens: ['gluten', 'dairy', 'nuts'],
     ingredients: ['flour', 'butter', 'almonds', 'almond cream', 'sugar', 'eggs'],
     bakedToday: true,
+    stockRemaining: 22,
   },
   {
     id: '5',
@@ -104,6 +143,7 @@ export const products: Product[] = [
     dietaryTags: ['vegan'],
     allergens: ['gluten'],
     ingredients: ['flour', 'whole wheat flour', 'water', 'salt', 'sourdough starter'],
+    stockRemaining: 15,
   },
   {
     id: '6',
@@ -116,6 +156,7 @@ export const products: Product[] = [
     dietaryTags: ['vegetarian'],
     allergens: ['gluten', 'dairy', 'eggs'],
     ingredients: ['flour', 'butter', 'eggs', 'chocolate', 'cream', 'sugar'],
+    stockRemaining: 28,
   },
   {
     id: '7',
@@ -143,6 +184,7 @@ export const products: Product[] = [
     dietaryTags: ['vegetarian'],
     allergens: ['gluten', 'dairy', 'eggs'],
     ingredients: ['puff pastry', 'pastry cream', 'fondant', 'vanilla', 'sugar'],
+    stockRemaining: 18,
   },
   {
     id: '9',
@@ -155,6 +197,7 @@ export const products: Product[] = [
     dietaryTags: ['vegetarian'],
     allergens: ['gluten', 'dairy', 'eggs'],
     ingredients: ['flour', 'butter', 'eggs', 'milk', 'sugar', 'yeast', 'salt'],
+    stockRemaining: 12,
   },
   {
     id: '10',
@@ -167,6 +210,7 @@ export const products: Product[] = [
     dietaryTags: ['vegetarian', 'gluten-free'],
     allergens: ['dairy', 'eggs', 'nuts'],
     ingredients: ['almond flour', 'sugar', 'egg whites', 'butter', 'cream', 'flavorings'],
+    stockRemaining: 25,
   },
   {
     id: '11',
@@ -194,6 +238,7 @@ export const products: Product[] = [
     dietaryTags: ['vegetarian'],
     allergens: ['gluten', 'dairy'],
     ingredients: ['apples', 'butter', 'sugar', 'puff pastry', 'cinnamon'],
+    stockRemaining: 7,
   },
 ];
 
@@ -229,3 +274,6 @@ export const bakeryInfo = {
     lng: 2.3522,
   } as { lat: number; lng: number },
 };
+
+// Alias for admin dashboard
+export const BAKERY_PRODUCTS = products;

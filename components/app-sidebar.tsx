@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { useTranslations } from "next-intl"
 import {
   Bot,
@@ -73,16 +74,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
       {
         title: t('cms.title'),
-        url: "/cms",
+        url: "/app/cms",
         icon: FileText,
         items: [
           {
             title: t('cms.pages'),
-            url: "/cms",
+            url: "/app/cms",
           },
           {
             title: t('cms.domainSettings'),
-            url: "/cms/domain-settings",
+            url: "/app/cms/domain-settings",
           },
         ],
       },
@@ -118,7 +119,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="/app">
+              <Link href="/app">
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                   <Command className="size-4" />
                 </div>
@@ -126,7 +127,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <span className="truncate font-medium">Admin Dashboard</span>
                   <span className="truncate text-xs">Enterprise</span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

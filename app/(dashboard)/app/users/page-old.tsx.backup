@@ -1,0 +1,200 @@
+'use client';
+
+import { useEffect, useState, useMemo } from 'react';
+import { UserPlus, Download } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import { UserStatsCards } from '@/components/users/user-stats';
+import { UserFiltersBar } from '@/components/users/user-filters';
+import { UserTable } from '@/components/users/user-table';
+import { UserDialog } from '@/components/users/user-dialog';
+import { UserActivityDialog } from '@/components/users/user-activity-dialog';
+import { DeleteUserDialog } from '@/components/users/delete-user-dialog';
+import {
+  useUsers,
+  useUserFilters,
+  useUserSort,
+  useUserActions,
+  useIsLoadingUsers,
+} from '@/stores/user-store';
+import {
+  calculateUserStats,
+  filterUsers,
+  sortUsers,
+} from '@/lib/users/user-utils';
+import { exportUsersToCSV } from '@/lib/users/export-users';
+import type { User, UserFormData } from '@/types/user';
+
+export default function UsersPage() {
+  const users = useUsers();
+  const filters = useUserFilters();
+  const sort = useUserSort();
+  const actions = useUserActions();
+  const isLoading = useIsLoadingUsers();
+
+  // Dialog states
+  const [isUserDialogOpen, setIsUserDialogOpen] = useState(false);
+  const [isActivityDialogOpen, setIsActivityDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
+
+  // Fetch users on mount
+  useEffect(() => {
+    actions.fetchUsers();
+  }, []);
+
+  // Calculate filtered and sorted users
+  const filteredUsers = useMemo(() => {
+    const filtered = filterUsers(users, filters);
+    return sortUsers(filtered, sort);
+  }, [users, filters, sort]);
+
+  // Calculate statistics
+  const stats = useMemo(() => calculateUserStats(users), [users]);
+
+  // Handlers
+  const handleCreateUser = () => {
+    setSelectedUser(null);
+    setIsUserDialogOpen(true);
+  };
+
+  const handleEditUser = (user: User) => {
+    setSelectedUser(user);
+    setIsUserDialogOpen(true);
+  };
+
+  const handleDeleteUser = (user: User) => {
+    setUserToDelete(user);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleViewActivity = (user: User) => {
+    setSelectedUser(user);
+    setIsActivityDialogOpen(true);
+  };
+
+  const handleUserSubmit = async (data: UserFormData) => {
+    try {
+      if (selectedUser) {
+        // Update existing user
+        await actions.updateUser(selectedUser.id, data);
+        toast.success('User updated', {
+          description: `${data.name} has been updated successfully.`,
+        });
+      } else {
+        // Create new user
+        await actions.createUser(data);
+        toast.success('User created', {
+          description: `${data.name} has been added to your team.`,
+        });
+      }
+    } catch (error) {
+      toast.error('Error', {
+        description: selectedUser
+          ? 'Failed to update user. Please try again.'
+          : 'Failed to create user. Please try again.',
+      });
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!userToDelete) return;
+
+    try {
+      await actions.deleteUser(userToDelete.id);
+      toast.success('User deleted', {
+        description: `${userToDelete.name} has been removed from your team.`,
+      });
+      setIsDeleteDialogOpen(false);
+      setUserToDelete(null);
+    } catch (error) {
+      toast.error('Error', {
+        description: 'Failed to delete user. Please try again.',
+      });
+    }
+  };
+
+  const handleExport = () => {
+    exportUsersToCSV(filteredUsers);
+    toast.success('Export successful', {
+      description: `Exported ${filteredUsers.length} users to CSV.`,
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex h-[600px] items-center justify-center">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <p className="mt-4 text-sm text-muted-foreground">Loading users...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Users</h1>
+          <p className="text-muted-foreground">
+            Manage your team members and their access
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={handleExport}>
+            <Download className="mr-2 h-4 w-4" />
+            Export
+          </Button>
+          <Button size="sm" onClick={handleCreateUser}>
+            <UserPlus className="mr-2 h-4 w-4" />
+            Create User
+          </Button>
+        </div>
+      </div>
+
+      {/* Stats Cards */}
+      <UserStatsCards stats={stats} />
+
+      {/* Filters */}
+      <UserFiltersBar
+        filters={filters}
+        onFiltersChange={(newFilters) => actions.setFilters(newFilters)}
+        onReset={() => actions.resetFilters()}
+      />
+
+      {/* Table */}
+      <UserTable
+        users={filteredUsers}
+        sort={sort}
+        onSortChange={(newSort) => actions.setSort(newSort)}
+        onEdit={handleEditUser}
+        onDelete={handleDeleteUser}
+        onViewActivity={handleViewActivity}
+      />
+
+      {/* Dialogs */}
+      <UserDialog
+        open={isUserDialogOpen}
+        onOpenChange={setIsUserDialogOpen}
+        user={selectedUser}
+        onSubmit={handleUserSubmit}
+      />
+
+      <UserActivityDialog
+        open={isActivityDialogOpen}
+        onOpenChange={setIsActivityDialogOpen}
+        user={selectedUser}
+      />
+
+      <DeleteUserDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        user={userToDelete}
+        onConfirm={handleConfirmDelete}
+      />
+    </div>
+  );
+}

@@ -201,5 +201,235 @@
       "customScriptsPlaceholder": "'<'script'>'/* Your custom tracking code */'<'/script'>'",
       "customScriptsDescription": "Add custom analytics or tracking code"
     }
+  },
+  "products": {
+    "title": "Products",
+    "description": "Manage your product catalog",
+    "newProduct": "New Product",
+    "searchPlaceholder": "Search products...",
+    "viewToggle": "Toggle view",
+    "noProducts": "No products yet. Create your first product to get started.",
+    "noProductsFound": "No products found matching your search.",
+    "createFirstProduct": "Create Your First Product",
+    "productCount": "{count} {count, plural, one {product} other {products}} total",
+    "stats": {
+      "totalProducts": "Total Products",
+      "categories": "Categories",
+      "lowStock": "Low Stock",
+      "outOfStock": "Out of Stock"
+    },
+    "filters": {
+      "all": "All",
+      "breads": "Breads",
+      "pastries": "Pastries",
+      "viennoiseries": "Viennoiseries",
+      "cakes": "Cakes",
+      "specials": "Specials",
+      "sortBy": "Sort by",
+      "sortName": "Name",
+      "sortNameAsc": "Name (A-Z)",
+      "sortNameDesc": "Name (Z-A)",
+      "sortPriceAsc": "Price (Low to High)",
+      "sortPriceDesc": "Price (High to Low)",
+      "sortStock": "Stock",
+      "sortDate": "Date Added",
+      "clearFilters": "Clear filters",
+      "activeFilters": "{count} active {count, plural, one {filter} other {filters}}"
+    },
+    "table": {
+      "image": "Image",
+      "name": "Name",
+      "category": "Category",
+      "price": "Price",
+      "stock": "Stock",
+      "tags": "Tags",
+      "actions": "Actions"
+    },
+    "stockStatus": {
+      "inStock": "In Stock",
+      "lowStock": "Low Stock",
+      "outOfStock": "Out of Stock"
+    },
+    "badges": {
+      "new": "New",
+      "special": "Special",
+      "limited": "Limited",
+      "bakedToday": "Baked Today"
+    },
+    "dietaryTags": {
+      "vegan": "Vegan",
+      "vegetarian": "Vegetarian",
+      "glutenFree": "Gluten-Free",
+      "dairyFree": "Dairy-Free",
+      "nutFree": "Nut-Free",
+      "organic": "Organic"
+    },
+    "form": {
+      "createTitle": "Create New Product",
+      "editTitle": "Edit Product",
+      "createDescription": "Add a new product to your catalog",
+      "editDescription": "Update product information",
+      "productName": "Product Name",
+      "productNamePlaceholder": "e.g., Sourdough Bread",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe your product...",
+      "category": "Category",
+      "categoryPlaceholder": "Select a category",
+      "price": "Price",
+      "pricePlaceholder": "0.00",
+      "imageUrl": "Image URL",
+      "imageUrlPlaceholder": "https://example.com/image.jpg",
+      "stockQuantity": "Stock Quantity",
+      "stockPlaceholder": "0",
+      "dietaryTags": "Dietary Tags",
+      "dietaryTagsDescription": "Select all that apply",
+      "specialAttributes": "Special Attributes",
+      "specialAttributesDescription": "Mark special product features",
+      "ingredients": "Ingredients",
+      "ingredientsPlaceholder": "List ingredients (optional)",
+      "allergens": "Allergens",
+      "allergensPlaceholder": "List allergens (optional)",
+      "cancel": "Cancel",
+      "create": "Create Product",
+      "save": "Save Changes",
+      "validation": {
+        "nameRequired": "Product name is required",
+        "nameMin": "Name must be at least 1 character",
+        "nameMax": "Name must be less than 100 characters",
+        "descriptionRequired": "Description is required",
+        "descriptionMin": "Description must be at least 10 characters",
+        "descriptionMax": "Description must be less than 500 characters",
+        "categoryRequired": "Category is required",
+        "priceRequired": "Price is required",
+        "pricePositive": "Price must be greater than 0",
+        "stockMin": "Stock cannot be negative",
+        "imageUrl": "Must be a valid URL"
+      }
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "quickEdit": "Quick Edit",
+      "viewDetails": "View Details"
+    },
+    "deleteConfirm": {
+      "title": "Delete Product",
+      "description": "Are you sure you want to delete \"{name}\"? This action cannot be undone.",
+      "cancel": "Cancel",
+      "delete": "Delete Product"
+    },
+    "messages": {
+      "createSuccess": "Product created successfully!",
+      "updateSuccess": "Product updated successfully!",
+      "deleteSuccess": "Product deleted successfully!",
+      "createError": "Failed to create product",
+      "updateError": "Failed to update product",
+      "deleteError": "Failed to delete product"
+    },
+    "shortcuts": {
+      "newProduct": "New Product",
+      "search": "Search",
+      "commandPalette": "Command Palette"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "description": "Manage your team members and their access",
+    "createUser": "Create User",
+    "exportUsers": "Export",
+    "searchPlaceholder": "Search by name or email...",
+    "noUsers": "No users found",
+    "noUsersDescription": "No users match your current filters. Try adjusting your search criteria.",
+    "stats": {
+      "totalUsers": "Total Users",
+      "activeUsers": "Active Users",
+      "newThisMonth": "New This Month",
+      "administrators": "Administrators"
+    },
+    "filters": {
+      "allRoles": "All Roles",
+      "allStatus": "All Status",
+      "reset": "Reset"
+    },
+    "roles": {
+      "admin": "Admin",
+      "editor": "Editor",
+      "user": "User"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "suspended": "Suspended"
+    },
+    "table": {
+      "user": "User",
+      "role": "Role",
+      "status": "Status",
+      "lastLogin": "Last Login",
+      "logins": "Logins",
+      "actions": "Actions"
+    },
+    "dialog": {
+      "createTitle": "Create New User",
+      "editTitle": "Edit User",
+      "createDescription": "Add a new user to your team. Fill in their details below.",
+      "editDescription": "Update user information and permissions.",
+      "name": "Name",
+      "namePlaceholder": "John Doe",
+      "email": "Email",
+      "emailPlaceholder": "john.doe@company.com",
+      "role": "Role",
+      "rolePlaceholder": "Select role",
+      "status": "Status",
+      "statusPlaceholder": "Select status",
+      "avatar": "Avatar URL (Optional)",
+      "avatarPlaceholder": "https://example.com/avatar.jpg",
+      "avatarDescription": "Provide a URL to the user's avatar image",
+      "cancel": "Cancel",
+      "create": "Create User",
+      "save": "Save Changes",
+      "saving": "Saving..."
+    },
+    "activity": {
+      "title": "Activity Timeline",
+      "description": "View activity history for {name}",
+      "noActivity": "No activity yet",
+      "noActivityDescription": "This user hasn't performed any actions yet.",
+      "actions": {
+        "user_created": "Account Created",
+        "user_logged_in": "Logged In",
+        "user_logged_out": "Logged Out",
+        "password_changed": "Password Changed",
+        "role_updated": "Role Updated",
+        "status_updated": "Status Updated",
+        "profile_updated": "Profile Updated",
+        "email_verified": "Email Verified"
+      }
+    },
+    "deleteDialog": {
+      "title": "Are you absolutely sure?",
+      "description": "This will permanently delete the user {name} ({email}). This action cannot be undone.",
+      "cancel": "Cancel",
+      "delete": "Delete User"
+    },
+    "actions": {
+      "edit": "Edit user",
+      "viewActivity": "View activity",
+      "delete": "Delete user"
+    },
+    "messages": {
+      "userCreated": "User created",
+      "userCreatedDescription": "{name} has been added to your team.",
+      "userUpdated": "User updated",
+      "userUpdatedDescription": "{name} has been updated successfully.",
+      "userDeleted": "User deleted",
+      "userDeletedDescription": "{name} has been removed from your team.",
+      "exportSuccess": "Export successful",
+      "exportSuccessDescription": "Exported {count} users to CSV.",
+      "error": "Error",
+      "createError": "Failed to create user. Please try again.",
+      "updateError": "Failed to update user. Please try again.",
+      "deleteError": "Failed to delete user. Please try again."
+    }
   }
 }

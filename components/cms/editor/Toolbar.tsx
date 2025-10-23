@@ -78,7 +78,7 @@ export function Toolbar() {
   }, []);
 
   const handleBack = () => {
-    router.push('/cms');
+    router.push('/app/cms');
   };
 
   const handleSave = async (silent = false) => {

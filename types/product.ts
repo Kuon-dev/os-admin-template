@@ -8,6 +8,9 @@ export type Category =
   | 'specials'
   | 'all';
 
+// Alias for admin dashboard (excludes 'all')
+export type ProductCategory = Exclude<Category, 'all'>;
+
 export type DietaryTag =
   | 'vegan'
   | 'vegetarian'
@@ -21,15 +24,15 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  image: string;
+  image?: string;
   category: Category;
   isNew?: boolean;
   isSpecial?: boolean;
-  dietaryTags?: DietaryTag[];
-  allergens?: string[];
-  ingredients?: string[];
+  dietaryTags: DietaryTag[];
+  allergens?: string | string[];
+  ingredients?: string | string[];
   limitedQuantity?: boolean;
-  stockRemaining?: number;
+  stockRemaining: number;
   bakedToday?: boolean;
 }
 

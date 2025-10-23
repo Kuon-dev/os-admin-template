@@ -138,12 +138,12 @@ export default function CMSPagesPage() {
     // Navigate to editor
     const newPage = pages[pages.length - 1];
     if (newPage) {
-      router.push(`/cms/${newPage.id}`);
+      router.push(`/app/cms/${newPage.id}`);
     }
   };
 
   const handleEditPage = (pageId: string) => {
-    router.push(`/cms/${pageId}`);
+    router.push(`/app/cms/${pageId}`);
   };
 
   const handleDuplicatePage = (pageId: string) => {

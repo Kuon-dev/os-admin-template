@@ -72,11 +72,11 @@ export function CommandPalette({
             <span>{t('newPage') || 'Create New Page'}</span>
             <CommandShortcut>⌘N</CommandShortcut>
           </CommandItem>
-          <CommandItem onSelect={() => handleSelect(() => router.push('/cms/settings'))}>
+          <CommandItem onSelect={() => handleSelect(() => router.push('/app/cms/settings'))}>
             <Settings className="mr-2 h-4 w-4" />
             <span>{t('commandPalette.settings') || 'CMS Settings'}</span>
           </CommandItem>
-          <CommandItem onSelect={() => handleSelect(() => router.push('/cms'))}>
+          <CommandItem onSelect={() => handleSelect(() => router.push('/app/cms'))}>
             <Search className="mr-2 h-4 w-4" />
             <span>{t('commandPalette.viewAll') || 'View All Pages'}</span>
           </CommandItem>

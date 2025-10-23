@@ -32,7 +32,7 @@ export function Toolbar() {
   const { currentPage, history, ui, actions } = usePageBuilderStore();
 
   const handleBack = () => {
-    router.push('/cms');
+    router.push('/app/cms');
   };
 
   const handleSave = async () => {
