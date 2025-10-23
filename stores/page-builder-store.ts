@@ -10,6 +10,7 @@ import type {
   PageBuilderStore,
   DeviceMode,
 } from '@/types/page-builder';
+import { getComponentDefaults } from '@/config/cms/component-defaults';
 
 const generateId = () => Math.random().toString(36).substring(2, 11);
 
@@ -17,6 +18,7 @@ const generateId = () => Math.random().toString(36).substring(2, 11);
 const STORAGE_KEYS = {
   PROPERTIES_PANEL_WIDTH: 'cms-properties-panel-width',
   PROPERTIES_PANEL_COLLAPSED: 'cms-properties-panel-collapsed',
+  COMPONENT_PALETTE_COLLAPSED: 'cms-component-palette-collapsed',
 };
 
 // Helper functions for localStorage
@@ -58,6 +60,7 @@ const usePageBuilderStore = create<PageBuilderStore>()(
         showGrid: true,
         propertiesPanelWidth: loadFromStorage(STORAGE_KEYS.PROPERTIES_PANEL_WIDTH, 350),
         propertiesPanelCollapsed: loadFromStorage(STORAGE_KEYS.PROPERTIES_PANEL_COLLAPSED, false),
+        componentPaletteCollapsed: loadFromStorage(STORAGE_KEYS.COMPONENT_PALETTE_COLLAPSED, false),
         activeDropZone: null,
       },
       actions: {
@@ -570,6 +573,16 @@ const usePageBuilderStore = create<PageBuilderStore>()(
           });
         },
 
+        toggleComponentPalette: () => {
+          set((state) => {
+            const newCollapsedState = !state.ui.componentPaletteCollapsed;
+            saveToStorage(STORAGE_KEYS.COMPONENT_PALETTE_COLLAPSED, newCollapsedState);
+            return {
+              ui: { ...state.ui, componentPaletteCollapsed: newCollapsedState },
+            };
+          });
+        },
+
         setActiveDropZone: (position: number, parentId?: string) => {
           set((state) => ({
             ui: {
@@ -591,92 +604,9 @@ const usePageBuilderStore = create<PageBuilderStore>()(
 );
 
 // Helper function to get default props for each component type
+// Now uses centralized configuration from config/cms/component-defaults.ts
 function getDefaultProps(type: ComponentType): ComponentProps {
-  switch (type) {
-    case 'text':
-      return {
-        content: 'Click to edit text',
-        fontSize: '16px',
-        fontWeight: 'normal',
-        color: 'inherit',
-        alignment: 'left',
-      };
-    case 'heading':
-      return {
-        content: 'Heading',
-        level: 'h2',
-        fontSize: '2rem',
-        fontWeight: 'bold',
-        alignment: 'left',
-      };
-    case 'button':
-      return {
-        text: 'Button',
-        variant: 'default',
-        size: 'md',
-      };
-    case 'image':
-      return {
-        alt: 'Image',
-        objectFit: 'cover',
-      };
-    case 'divider':
-      return {
-        style: 'solid',
-        thickness: '1px',
-        color: 'currentColor',
-        spacing: '1rem',
-      };
-    case 'container':
-      return {
-        maxWidth: '1200px',
-        padding: '1rem',
-      };
-    case 'grid':
-      return {
-        columns: 2,
-        gap: '1rem',
-        padding: '0',
-      };
-    case 'column':
-      return {
-        span: 1,
-        padding: '0',
-      };
-    case 'spacer':
-      return {
-        height: '2rem',
-      };
-    case 'video':
-      return {
-        autoPlay: false,
-        loop: false,
-        muted: false,
-        controls: true,
-      };
-    case 'icon':
-      return {
-        name: 'star',
-        size: '24px',
-        color: 'currentColor',
-      };
-    case 'gallery':
-      return {
-        images: [],
-        columns: 3,
-        gap: '1rem',
-      };
-    case 'carousel':
-      return {
-        items: [],
-        autoPlay: false,
-        interval: 5000,
-        showControls: true,
-        showIndicators: true,
-      };
-    default:
-      return {} as ComponentProps;
-  }
+  return getComponentDefaults(type);
 }
 
 export default usePageBuilderStore;

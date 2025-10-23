@@ -44,7 +44,10 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { motion } from 'motion/react';
+import { COMPONENT_DEFAULTS } from '@/config/cms/component-defaults';
 
+// Component palette data with metadata (icons, labels, categories)
+// Default props are now centralized in config/cms/component-defaults.ts
 const componentPaletteData: ComponentPaletteItem[] = [
   // Basic Components
   {
@@ -52,53 +55,35 @@ const componentPaletteData: ComponentPaletteItem[] = [
     label: 'Text',
     icon: Type,
     category: 'basic',
-    defaultProps: {
-      content: 'Click to edit text',
-      fontSize: '16px',
-      alignment: 'left',
-    },
+    defaultProps: COMPONENT_DEFAULTS.text,
   },
   {
     type: 'heading',
     label: 'Heading',
     icon: Heading,
     category: 'basic',
-    defaultProps: {
-      content: 'Heading',
-      level: 'h2',
-      alignment: 'left',
-    },
+    defaultProps: COMPONENT_DEFAULTS.heading,
   },
   {
     type: 'button',
     label: 'Button',
     icon: MousePointer,
     category: 'basic',
-    defaultProps: {
-      text: 'Button',
-      variant: 'default',
-      size: 'md',
-    },
+    defaultProps: COMPONENT_DEFAULTS.button,
   },
   {
     type: 'image',
     label: 'Image',
     icon: ImageIcon,
     category: 'basic',
-    defaultProps: {
-      alt: 'Image',
-      objectFit: 'cover',
-    },
+    defaultProps: COMPONENT_DEFAULTS.image,
   },
   {
     type: 'divider',
     label: 'Divider',
     icon: Minus,
     category: 'basic',
-    defaultProps: {
-      style: 'solid',
-      thickness: '1px',
-    },
+    defaultProps: COMPONENT_DEFAULTS.divider,
   },
   // Layout Components
   {
@@ -106,38 +91,28 @@ const componentPaletteData: ComponentPaletteItem[] = [
     label: 'Container',
     icon: Box,
     category: 'layout',
-    defaultProps: {
-      maxWidth: '1200px',
-      padding: '1rem',
-    },
+    defaultProps: COMPONENT_DEFAULTS.container,
   },
   {
     type: 'grid',
     label: 'Grid',
     icon: LayoutGrid,
     category: 'layout',
-    defaultProps: {
-      columns: 2,
-      gap: '1rem',
-    },
+    defaultProps: COMPONENT_DEFAULTS.grid,
   },
   {
     type: 'column',
     label: 'Column',
     icon: Columns,
     category: 'layout',
-    defaultProps: {
-      span: 1,
-    },
+    defaultProps: COMPONENT_DEFAULTS.column,
   },
   {
     type: 'spacer',
     label: 'Spacer',
     icon: Space,
     category: 'layout',
-    defaultProps: {
-      height: '2rem',
-    },
+    defaultProps: COMPONENT_DEFAULTS.spacer,
   },
   // Media Components
   {
@@ -145,40 +120,28 @@ const componentPaletteData: ComponentPaletteItem[] = [
     label: 'Video',
     icon: Video,
     category: 'media',
-    defaultProps: {
-      autoPlay: false,
-      controls: true,
-    },
+    defaultProps: COMPONENT_DEFAULTS.video,
   },
   {
     type: 'icon',
     label: 'Icon',
     icon: Sparkles,
     category: 'media',
-    defaultProps: {
-      name: 'star',
-      size: '24px',
-    },
+    defaultProps: COMPONENT_DEFAULTS.icon,
   },
   {
     type: 'gallery',
     label: 'Gallery',
     icon: Images,
     category: 'media',
-    defaultProps: {
-      images: [],
-      columns: 3,
-    },
+    defaultProps: COMPONENT_DEFAULTS.gallery,
   },
   {
     type: 'carousel',
     label: 'Carousel',
     icon: ListVideo,
     category: 'media',
-    defaultProps: {
-      items: [],
-      autoPlay: false,
-    },
+    defaultProps: COMPONENT_DEFAULTS.carousel,
   },
 ];
 
@@ -342,21 +305,12 @@ export function ComponentPalette() {
     'media',
   ]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [recentComponents, setRecentComponents] = useState<ComponentPaletteItem[]>([]);
-  const [isPaletteActive, setIsPaletteActive] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const paletteRef = useRef<HTMLDivElement>(null);
 
   const handleAddComponent = useCallback((type: ComponentType) => {
-    // Track recently used components
-    const component = componentPaletteData.find(c => c.type === type);
-    if (component) {
-      setRecentComponents(prev => {
-        const filtered = prev.filter(c => c.type !== type);
-        return [component, ...filtered].slice(0, 5); // Keep last 5
-      });
-    }
+    // Component added - no tracking needed
   }, []);
 
   const toggleCategory = (category: string) => {
@@ -386,12 +340,7 @@ export function ComponentPalette() {
   // Get visible components list for keyboard navigation
   const visibleComponents = searchQuery
     ? filteredComponents
-    : [
-        ...recentComponents,
-        ...componentPaletteData.filter(
-          (c) => !recentComponents.some((r) => r.type === c.type)
-        ),
-      ];
+    : componentPaletteData;
 
   // Keyboard navigation
   useEffect(() => {
@@ -410,8 +359,6 @@ export function ComponentPalette() {
         }
         return;
       }
-
-      if (!isPaletteActive) return;
 
       switch (e.key) {
         case 'ArrowDown':
@@ -447,7 +394,6 @@ export function ComponentPalette() {
           break;
         case 'Escape':
           setFocusedIndex(-1);
-          setIsPaletteActive(false);
           break;
       }
     };
@@ -455,7 +401,6 @@ export function ComponentPalette() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [
-    isPaletteActive,
     focusedIndex,
     visibleComponents,
     handleAddComponent,
@@ -470,18 +415,7 @@ export function ComponentPalette() {
     <TooltipProvider>
       <div
         ref={paletteRef}
-        className={cn(
-          "w-64 border-r bg-background flex flex-col transition-all duration-200",
-          isPaletteActive && "palette-active"
-        )}
-        onFocus={() => setIsPaletteActive(true)}
-        onBlur={(e) => {
-          // Only deactivate if focus is leaving the palette entirely
-          if (!paletteRef.current?.contains(e.relatedTarget as Node)) {
-            setIsPaletteActive(false);
-            setFocusedIndex(-1);
-          }
-        }}
+        className="w-64 h-full border-r bg-background flex flex-col overflow-hidden"
         role="navigation"
         aria-label="Component palette"
       >
@@ -494,17 +428,9 @@ export function ComponentPalette() {
             <div>
               <h3 className="font-semibold text-base">Components</h3>
               <p className="text-xs text-muted-foreground mt-1" style={{ marginTop: 'var(--spacing-1)' }}>
-                {isPaletteActive ? 'Use ↑↓ to navigate, Enter to add' : 'Press / to search'}
+                Press / to search
               </p>
             </div>
-            {isPaletteActive && (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="w-2 h-2 rounded-full bg-primary"
-                aria-label="Palette active indicator"
-              />
-            )}
           </div>
         </div>
 
@@ -549,7 +475,7 @@ export function ComponentPalette() {
         </div>
 
         {/* Component List */}
-        <ScrollArea className="flex-1">
+        <ScrollArea className="flex-1 min-h-0">
           <div
             id="component-list"
             className="space-y-2"
@@ -560,38 +486,6 @@ export function ComponentPalette() {
             role="listbox"
             aria-label="Available components"
           >
-            {/* Recently Used Section */}
-            {recentComponents.length > 0 && !searchQuery && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="pb-4 border-b mb-4"
-                style={{
-                  paddingBottom: 'var(--spacing-4)',
-                  marginBottom: 'var(--spacing-4)',
-                }}
-              >
-                <div className="flex items-center justify-between mb-2" style={{ marginBottom: 'var(--spacing-2)' }}>
-                  <h4 className="text-xs font-semibold text-primary uppercase tracking-wide">
-                    Recently Used
-                  </h4>
-                  <span className="text-xs text-muted-foreground">{recentComponents.length}</span>
-                </div>
-                <div className="space-y-1" style={{ gap: 'var(--spacing-1)' }}>
-                  {recentComponents.map((item, idx) => (
-                    <ComponentItem
-                      key={`recent-${item.type}`}
-                      item={item}
-                      onAddComponent={handleAddComponent}
-                      isFocused={focusedIndex === idx}
-                      onFocus={() => setFocusedIndex(idx)}
-                      searchQuery={searchQuery}
-                    />
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
             {/* Search Results or Categorized List */}
             {searchQuery ? (
               <div>
@@ -631,21 +525,19 @@ export function ComponentPalette() {
               categories.map((category) => {
                 const components = getComponentsByCategory(category.id);
                 const isExpanded = expandedCategories.includes(category.id);
-                const categoryStartIndex =
-                  recentComponents.length +
-                  categories
-                    .slice(
-                      0,
-                      categories.findIndex((c) => c.id === category.id)
-                    )
-                    .reduce(
-                      (acc, cat) =>
-                        acc +
-                        (expandedCategories.includes(cat.id)
-                          ? getComponentsByCategory(cat.id).length
-                          : 0),
-                      0
-                    );
+                const categoryStartIndex = categories
+                  .slice(
+                    0,
+                    categories.findIndex((c) => c.id === category.id)
+                  )
+                  .reduce(
+                    (acc, cat) =>
+                      acc +
+                      (expandedCategories.includes(cat.id)
+                        ? getComponentsByCategory(cat.id).length
+                        : 0),
+                    0
+                  );
 
                 return (
                   <Collapsible

@@ -212,10 +212,12 @@ export default function DomainSettingsPage() {
           variants={cardVariants}
           className="col-span-full md:col-span-4"
         >
-          <Card className="h-full overflow-hidden !p-0">
-            <div className="border-b bg-muted/20 px-5 py-3">
+          <Card className="h-full overflow-hidden !p-0 border-primary/20">
+            <div className="border-b bg-gradient-to-r from-primary/10 to-primary/5 px-5 py-3">
               <div className="flex items-center gap-2">
-                <Globe className="h-4 w-4 text-muted-foreground" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
+                  <Globe className="h-4 w-4 text-primary" />
+                </div>
                 <h2 className="text-sm font-semibold">{t("domain.title")}</h2>
               </div>
               <p className="mt-0.5 text-xs text-muted-foreground">
@@ -258,8 +260,8 @@ export default function DomainSettingsPage() {
                         >
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <div className="flex h-7 w-7 items-center justify-center rounded">
-                                <X className="h-3.5 w-3.5 text-destructive" />
+                              <div className="flex h-7 w-7 items-center justify-center rounded bg-red-500/10">
+                                <X className="h-3.5 w-3.5 text-red-600 dark:text-red-400" />
                               </div>
                             </TooltipTrigger>
                             <TooltipContent>
@@ -275,8 +277,8 @@ export default function DomainSettingsPage() {
                           exit={{ scale: 0, opacity: 0 }}
                           transition={spring}
                         >
-                          <div className="flex h-7 w-7 items-center justify-center rounded">
-                            <Check className="h-3.5 w-3.5 text-green-600" />
+                          <div className="flex h-7 w-7 items-center justify-center rounded bg-emerald-500/10">
+                            <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                           </div>
                         </motion.div>
                       )}
@@ -297,7 +299,7 @@ export default function DomainSettingsPage() {
                             exit={{ scale: 0 }}
                             transition={spring}
                           >
-                            <Check className="h-3.5 w-3.5 text-green-600" />
+                            <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                           </motion.div>
                         ) : (
                           <motion.div
@@ -352,10 +354,12 @@ export default function DomainSettingsPage() {
           variants={cardVariants}
           className="col-span-full md:col-span-2"
         >
-          <Card className="h-full overflow-hidden !p-0">
-            <div className="border-b bg-muted/20 px-4 py-3">
+          <Card className="h-full overflow-hidden !p-0 border-cyan-500/20">
+            <div className="border-b bg-gradient-to-r from-cyan-500/10 to-cyan-500/5 px-4 py-3">
               <div className="flex items-center gap-2">
-                <Link className="h-4 w-4 text-muted-foreground" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-cyan-500/10">
+                  <Link className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
+                </div>
                 <h2 className="text-sm font-semibold">URL Config</h2>
               </div>
             </div>
@@ -373,8 +377,8 @@ export default function DomainSettingsPage() {
                   className="font-mono text-xs"
                 />
                 {urlValid && slugPattern && (
-                  <div className="rounded-md bg-muted/50 px-2 py-1">
-                    <p className="text-[10px] text-muted-foreground">
+                  <div className="rounded-md bg-cyan-500/10 border border-cyan-500/20 px-2 py-1">
+                    <p className="text-[10px] text-cyan-700 dark:text-cyan-300 font-medium">
                       {slugPattern.replace("{slug}", "my-page")}
                     </p>
                   </div>
@@ -382,7 +386,7 @@ export default function DomainSettingsPage() {
               </div>
 
               {/* Trailing Slash Toggle */}
-              <div className="mt-4 flex items-center justify-between rounded-md border border-border/40 bg-muted/20 px-3 py-2">
+              <div className="mt-4 flex items-center justify-between rounded-md border border-cyan-500/20 bg-cyan-500/5 px-3 py-2">
                 <Label htmlFor="trailing-slash-mini" className="text-xs">
                   Trailing /
                 </Label>
@@ -404,10 +408,12 @@ export default function DomainSettingsPage() {
           variants={cardVariants}
           className="col-span-full md:col-span-3"
         >
-          <Card className="h-full overflow-hidden !p-0">
-            <div className="border-b bg-muted/20 px-5 py-3">
+          <Card className="h-full overflow-hidden !p-0 border-emerald-500/20">
+            <div className="border-b bg-gradient-to-r from-emerald-500/10 to-emerald-500/5 px-5 py-3">
               <div className="flex items-center gap-2">
-                <Search className="h-4 w-4 text-muted-foreground" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-500/10">
+                  <Search className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                </div>
                 <h2 className="text-sm font-semibold">{t("seo.title")}</h2>
               </div>
               <p className="mt-0.5 text-xs text-muted-foreground">
@@ -507,7 +513,7 @@ export default function DomainSettingsPage() {
           </Card>
         </motion.div>
 
-        {/* Analytics IDs - Compact card */}
+        {/* Analytics Scripts - Tall card */}
         <motion.div
           custom={3}
           initial="hidden"
@@ -515,14 +521,87 @@ export default function DomainSettingsPage() {
           variants={cardVariants}
           className="col-span-full md:col-span-3"
         >
-          <Card className="h-full overflow-hidden !p-0">
-            <div className="border-b bg-muted/20 px-5 py-3">
+          <Card className="h-full overflow-hidden !p-0 border-rose-500/20">
+            <div className="border-b bg-gradient-to-r from-rose-500/10 to-rose-500/5 px-5 py-3">
               <div className="flex items-center gap-2">
-                <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                <h2 className="text-sm font-semibold">Analytics IDs</h2>
+                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-rose-500/10">
+                  <BarChart3 className="h-4 w-4 text-rose-600 dark:text-rose-400" />
+                </div>
+                <h2 className="text-sm font-semibold">Custom Scripts</h2>
               </div>
             </div>
-            <div className="grid gap-4 p-5">
+            <div className="p-5">
+              <div className="space-y-1.5">
+                <Label htmlFor="custom-scripts" className="text-xs font-medium">
+                  {t("analytics.customScripts")}
+                </Label>
+                <Textarea
+                  id="custom-scripts"
+                  placeholder={t("analytics.customScriptsPlaceholder")}
+                  value={customScripts}
+                  onChange={(e) => setCustomScripts(e.target.value)}
+                  className="min-h-32 resize-none font-mono text-xs"
+                  rows={6}
+                />
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* URL Redirects - Wide card */}
+        <motion.div
+          custom={4}
+          initial="hidden"
+          animate="visible"
+          variants={cardVariants}
+          className="col-span-full md:col-span-4"
+        >
+          <Card className="h-full overflow-hidden !p-0 border-indigo-500/20">
+            <div className="border-b bg-gradient-to-r from-indigo-500/10 to-indigo-500/5 px-5 py-3">
+              <div className="flex items-center gap-2">
+                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-indigo-500/10">
+                  <Link className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <h2 className="text-sm font-semibold">{t("url.redirects")}</h2>
+              </div>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                {t("url.redirectsDescription")}
+              </p>
+            </div>
+            <div className="p-5">
+              <Textarea
+                id="redirects"
+                placeholder={t("url.redirectsPlaceholder")}
+                value={redirects}
+                onChange={(e) => setRedirects(e.target.value)}
+                className="min-h-32 resize-none font-mono text-xs"
+                rows={6}
+              />
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* Analytics IDs - Compact card */}
+        <motion.div
+          custom={5}
+          initial="hidden"
+          animate="visible"
+          variants={cardVariants}
+          className="col-span-full md:col-span-2"
+        >
+          <Card className="h-full overflow-hidden !p-0 border-amber-500/20">
+            <div className="border-b bg-gradient-to-r from-amber-500/10 to-amber-500/5 px-4 py-3">
+              <div className="flex items-center gap-2">
+                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-amber-500/10">
+                  <BarChart3 className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                </div>
+                <h2 className="text-sm font-semibold">Analytics IDs</h2>
+              </div>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                Google Analytics & Tag Manager
+              </p>
+            </div>
+            <div className="grid gap-4 p-4">
               {/* GA ID */}
               <div className="space-y-1.5">
                 <Label htmlFor="ga-id" className="text-xs font-medium">
@@ -555,67 +634,6 @@ export default function DomainSettingsPage() {
             </div>
           </Card>
         </motion.div>
-
-        {/* URL Redirects - Wide card */}
-        <motion.div
-          custom={4}
-          initial="hidden"
-          animate="visible"
-          variants={cardVariants}
-          className="col-span-full md:col-span-4"
-        >
-          <Card className="h-full overflow-hidden !p-0">
-            <div className="border-b bg-muted/20 px-5 py-3">
-              <div className="flex items-center gap-2">
-                <Link className="h-4 w-4 text-muted-foreground" />
-                <h2 className="text-sm font-semibold">{t("url.redirects")}</h2>
-              </div>
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                {t("url.redirectsDescription")}
-              </p>
-            </div>
-            <div className="p-5">
-              <Textarea
-                id="redirects"
-                placeholder={t("url.redirectsPlaceholder")}
-                value={redirects}
-                onChange={(e) => setRedirects(e.target.value)}
-                className="min-h-32 resize-none font-mono text-xs"
-                rows={6}
-              />
-            </div>
-          </Card>
-        </motion.div>
-
-        {/* Analytics Scripts - Tall card */}
-        <motion.div
-          custom={5}
-          initial="hidden"
-          animate="visible"
-          variants={cardVariants}
-          className="col-span-full md:col-span-2 md:row-span-2"
-        >
-          <Card className="h-full overflow-hidden !p-0">
-            <div className="border-b bg-muted/20 px-4 py-3">
-              <div className="flex items-center gap-2">
-                <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                <h2 className="text-sm font-semibold">Custom Scripts</h2>
-              </div>
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                {t("analytics.customScriptsDescription")}
-              </p>
-            </div>
-            <div className="p-4">
-              <Textarea
-                id="custom-scripts"
-                placeholder={t("analytics.customScriptsPlaceholder")}
-                value={customScripts}
-                onChange={(e) => setCustomScripts(e.target.value)}
-                className="h-[calc(100%-16px)] min-h-48 resize-none font-mono text-xs"
-              />
-            </div>
-          </Card>
-        </motion.div>
       </div>
 
       {/* Floating Action Bar - Appears only when changes detected */}
@@ -628,9 +646,9 @@ export default function DomainSettingsPage() {
             transition={spring}
             className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2"
           >
-            <Card className="!flex-row !gap-3 !p-0 !border-border/40 !bg-background/95 px-4 py-3 !shadow-lg backdrop-blur-sm">
+            <Card className="!flex-row !gap-3 !p-0 !border-primary/30 !bg-background/95 px-4 py-3 !shadow-lg backdrop-blur-sm ring-1 ring-primary/10">
               <div className="flex items-center gap-2 text-sm">
-                <div className="h-2 w-2 animate-pulse rounded-full bg-orange-500" />
+                <div className="h-2 w-2 animate-pulse rounded-full bg-primary shadow-lg shadow-primary/50" />
                 <span className="font-medium">Unsaved changes</span>
               </div>
               <div className="h-4 w-px bg-border" />

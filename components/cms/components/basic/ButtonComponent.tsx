@@ -51,6 +51,7 @@ export function ButtonComponent({ component }: ButtonComponentProps) {
     color: props.textColor,
     borderColor: props.borderColor,
     boxShadow: props.shadow,
+    borderRadius: props.borderRadius,
     paddingLeft: props.paddingX,
     paddingRight: props.paddingX,
     paddingTop: props.paddingY,

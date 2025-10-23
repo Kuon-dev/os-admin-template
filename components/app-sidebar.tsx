@@ -9,6 +9,7 @@ import {
   FileText,
   Settings2,
   SquareTerminal,
+  Users,
 } from "lucide-react"
 
 import { NavMain } from "@/components/sidebar/nav-main"
@@ -88,27 +89,36 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ],
       },
       {
+        title: "Employees",
+        url: "/app/employees",
+        icon: Users,
+        items: [
+          {
+            title: "Dashboard",
+            url: "/app/employees",
+          },
+          {
+            title: "Schedule",
+            url: "/app/schedule",
+          },
+          {
+            title: "Leave Management",
+            url: "/app/leave",
+          },
+          {
+            title: "Timesheet",
+            url: "/app/timesheet",
+          },
+          {
+            title: "Payroll",
+            url: "/app/payroll",
+          },
+        ],
+      },
+      {
         title: t('settings.title'),
         url: "/app/settings",
         icon: Settings2,
-        items: [
-          {
-            title: t('settings.general'),
-            url: "/app/settings",
-          },
-          {
-            title: t('settings.team'),
-            url: "/app/settings/team",
-          },
-          {
-            title: t('settings.billing'),
-            url: "/app/settings/billing",
-          },
-          {
-            title: t('settings.limits'),
-            url: "/app/settings/limits",
-          },
-        ],
       },
     ],
   }

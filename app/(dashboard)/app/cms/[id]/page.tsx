@@ -24,6 +24,7 @@ export default function CMSEditorPage() {
   const pageId = params.id as string;
   const { currentPage, ui, actions } = usePageBuilderStore();
   const propertiesPanelRef = useRef<ImperativePanelHandle>(null);
+  const componentPaletteRef = useRef<ImperativePanelHandle>(null);
 
   useEffect(() => {
     if (pageId) {
@@ -36,7 +37,7 @@ export default function CMSEditorPage() {
     };
   }, [pageId]);
 
-  // Sync collapsed state with ResizablePanel
+  // Sync properties panel collapsed state with ResizablePanel
   useEffect(() => {
     if (propertiesPanelRef.current) {
       if (ui.propertiesPanelCollapsed) {
@@ -46,6 +47,17 @@ export default function CMSEditorPage() {
       }
     }
   }, [ui.propertiesPanelCollapsed]);
+
+  // Sync component palette collapsed state with ResizablePanel
+  useEffect(() => {
+    if (componentPaletteRef.current) {
+      if (ui.componentPaletteCollapsed) {
+        componentPaletteRef.current.collapse();
+      } else {
+        componentPaletteRef.current.expand();
+      }
+    }
+  }, [ui.componentPaletteCollapsed]);
 
   if (!currentPage) {
     return (
@@ -66,12 +78,29 @@ export default function CMSEditorPage() {
         {/* Main Editor Area */}
         <div className="flex-1 overflow-hidden">
           <ResizablePanelGroup direction="horizontal" className="h-full">
-            {/* Component Palette - Left Sidebar (Fixed width) */}
-            <ResizablePanel defaultSize={20} minSize={15} maxSize={25}>
+            {/* Component Palette - Left Sidebar (Resizable & Collapsible) */}
+            <ResizablePanel
+              ref={componentPaletteRef}
+              defaultSize={20}
+              minSize={15}
+              maxSize={30}
+              collapsible={true}
+              collapsedSize={0}
+              onCollapse={() => {
+                if (!ui.componentPaletteCollapsed) {
+                  actions.toggleComponentPalette();
+                }
+              }}
+              onExpand={() => {
+                if (ui.componentPaletteCollapsed) {
+                  actions.toggleComponentPalette();
+                }
+              }}
+            >
               <ComponentPalette />
             </ResizablePanel>
 
-            <ResizableHandle />
+            <ResizableHandle withHandle />
 
             {/* Canvas - Center (Flexible) */}
             <ResizablePanel defaultSize={55}>
