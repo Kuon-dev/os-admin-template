@@ -7,6 +7,8 @@ import {
   Bot,
   Command,
   FileText,
+  GitBranch,
+  LifeBuoy,
   Settings2,
   SquareTerminal,
   Users,
@@ -55,6 +57,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ],
       },
       {
+        title: "Dependencies",
+        url: "/app/dependencies",
+        icon: GitBranch,
+      },
+      {
         title: t('management.title'),
         url: "#",
         icon: Bot,
@@ -70,6 +77,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           {
             title: t('management.orders'),
             url: "/app/orders",
+          },
+        ],
+      },
+      {
+        title: "Support Tickets",
+        url: "/app/support",
+        icon: LifeBuoy,
+        items: [
+          {
+            title: "All Tickets",
+            url: "/app/support",
+          },
+          {
+            title: "Analytics",
+            url: "/app/support/analytics",
           },
         ],
       },
