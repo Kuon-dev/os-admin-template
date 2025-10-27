@@ -8,6 +8,7 @@ import { TicketReplyForm } from '@/components/support/ticket-reply-form';
 import { TicketMetadataPanel } from '@/components/support/ticket-metadata-panel';
 import { TicketStatusBadge } from '@/components/support/ticket-status-badge';
 import { TicketPriorityBadge } from '@/components/support/ticket-priority-badge';
+import { getTeamMemberName } from '@/lib/support/assignees';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -76,6 +77,18 @@ export default function TicketDetailPage() {
       toast.success('Ticket status updated');
     } catch (error) {
       toast.error('Failed to update ticket status');
+    }
+  };
+
+  const handleAssigneeChange = async (assigneeId: string | null) => {
+    try {
+      await actions.updateTicket(ticketId, {
+        assignedTo: assigneeId,
+        assignedToName: assigneeId ? getTeamMemberName(assigneeId) : null,
+      });
+      toast.success('Ticket assigned successfully');
+    } catch (error) {
+      toast.error('Failed to assign ticket');
     }
   };
 
@@ -202,7 +215,10 @@ export default function TicketDetailPage() {
 
         {/* Sidebar */}
         <div>
-          <TicketMetadataPanel ticket={ticket} />
+          <TicketMetadataPanel
+            ticket={ticket}
+            onAssigneeChange={handleAssigneeChange}
+          />
         </div>
       </div>
     </motion.div>

@@ -1,9 +1,17 @@
 import { Ticket } from '@/types/ticket';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { TicketStatusBadge } from './ticket-status-badge';
 import { TicketPriorityBadge } from './ticket-priority-badge';
 import { TicketSLAIndicator } from './ticket-sla-indicator';
+import { teamMembers, getTeamMemberName } from '@/lib/support/assignees';
 import { format } from 'date-fns';
 import {
   User,
@@ -16,11 +24,17 @@ import {
 
 interface TicketMetadataPanelProps {
   ticket: Ticket;
+  onAssigneeChange?: (assigneeId: string | null) => Promise<void>;
 }
 
-export function TicketMetadataPanel({ ticket }: TicketMetadataPanelProps) {
+export function TicketMetadataPanel({ ticket, onAssigneeChange }: TicketMetadataPanelProps) {
   const capitalizeCategory = (category: string) => {
     return category.charAt(0).toUpperCase() + category.slice(1);
+  };
+
+  const handleAssigneeChange = async (assigneeId: string) => {
+    const id = assigneeId === 'unassigned' ? null : assigneeId;
+    await onAssigneeChange?.(id);
   };
 
   return (
@@ -55,6 +69,29 @@ export function TicketMetadataPanel({ ticket }: TicketMetadataPanelProps) {
             />
           </div>
         </div>
+      </Card>
+
+      {/* Assignee */}
+      <Card className="p-4">
+        <label className="text-xs font-semibold text-gray-500 uppercase block mb-2">
+          Assigned To
+        </label>
+        <Select
+          value={ticket.assignedTo || 'unassigned'}
+          onValueChange={handleAssigneeChange}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="unassigned">Unassigned</SelectItem>
+            {teamMembers.map((member) => (
+              <SelectItem key={member.id} value={member.id}>
+                {member.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </Card>
 
       {/* Customer Info */}
