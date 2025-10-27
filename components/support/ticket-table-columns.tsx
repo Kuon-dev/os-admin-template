@@ -16,7 +16,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
 
-export const ticketTableColumns: ColumnDef<Ticket>[] = [
+export const createTicketTableColumns = (
+  onEdit?: (ticket: Ticket) => void,
+  onDelete?: (ticket: Ticket) => void
+): ColumnDef<Ticket>[] => [
   {
     id: 'select',
     header: ({ table }) => (
@@ -182,8 +185,15 @@ export const ticketTableColumns: ColumnDef<Ticket>[] = [
           <DropdownMenuItem asChild>
             <Link href={`/app/support/${row.original.id}`}>View Details</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>Edit Ticket</DropdownMenuItem>
-          <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => onEdit?.(row.original)}>
+            Edit Ticket
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => onDelete?.(row.original)}
+            className="text-red-600"
+          >
+            Delete
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     ),

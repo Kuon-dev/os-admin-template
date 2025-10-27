@@ -62,9 +62,10 @@ interface TicketFiltersProps {
   };
   onFiltersChange: (filters: any) => void;
   onReset: () => void;
+  onExport?: () => void;
 }
 
-export function TicketFilters({ filters, onFiltersChange, onReset }: TicketFiltersProps) {
+export function TicketFilters({ filters, onFiltersChange, onReset, onExport }: TicketFiltersProps) {
   const [searchInput, setSearchInput] = useState(filters.search);
 
   const handleSearchChange = (value: string) => {
@@ -114,9 +115,9 @@ export function TicketFilters({ filters, onFiltersChange, onReset }: TicketFilte
           <RotateCcw className="h-4 w-4 mr-2" />
           Reset
         </Button>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={onExport}>
           <Download className="h-4 w-4 mr-2" />
-          Export
+          Export CSV
         </Button>
       </div>
 

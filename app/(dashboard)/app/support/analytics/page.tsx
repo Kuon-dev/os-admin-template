@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useTicketStore } from '@/stores/ticket-store';
+import { useTicketStore, useTicketStats, useTicketActions } from '@/stores/ticket-store';
 import { TicketStatsCards } from '@/components/support/ticket-stats-cards';
 import { TicketStatsCharts } from '@/components/support/ticket-stats-charts';
 import { Button } from '@/components/ui/button';
@@ -14,9 +14,8 @@ export default function SupportAnalyticsPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
-  const stats = useTicketStore((state) => state.stats);
-  const fetchStats = useTicketStore((state) => state.actions.fetchStats);
-  const fetchTickets = useTicketStore((state) => state.actions.fetchTickets);
+  const stats = useTicketStats();
+  const { fetchStats, fetchTickets } = useTicketActions();
 
   useEffect(() => {
     const loadData = async () => {

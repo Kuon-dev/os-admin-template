@@ -51,7 +51,7 @@ const commonTags = ['urgent', 'mobile', 'authentication', 'backend', 'feature-re
 interface TicketDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: TicketFormData) => Promise<void>;
+  onSubmit: (data: TicketFormData, isEdit?: boolean) => Promise<void>;
   ticket?: Ticket | null;
 }
 

@@ -28,14 +28,17 @@ import {
   ChevronsRight,
 } from 'lucide-react';
 import { Ticket } from '@/types/ticket';
-import { ticketTableColumns } from './ticket-table-columns';
+import { createTicketTableColumns } from './ticket-table-columns';
 import { motion } from 'motion/react';
 
 interface TicketTableProps {
   tickets: Ticket[];
+  onEditTicket?: (ticket: Ticket) => void;
+  onDeleteTicket?: (ticket: Ticket) => void;
 }
 
-export function TicketTable({ tickets }: TicketTableProps) {
+export function TicketTable({ tickets, onEditTicket, onDeleteTicket }: TicketTableProps) {
+  const columns = createTicketTableColumns(onEditTicket, onDeleteTicket);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -108,7 +111,7 @@ export function TicketTable({ tickets }: TicketTableProps) {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={ticketTableColumns.length}
+                  colSpan={columns.length}
                   className="h-24 text-center"
                 >
                   No tickets found.

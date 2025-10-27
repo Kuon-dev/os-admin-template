@@ -6,15 +6,21 @@ import { TicketStatsCards } from '@/components/support/ticket-stats-cards';
 import { TicketFilters } from '@/components/support/ticket-filters';
 import { TicketTable } from '@/components/support/ticket-table';
 import { TicketDialog } from '@/components/support/ticket-dialog';
+import { TicketDeleteDialog } from '@/components/support/ticket-delete-dialog';
 import { Button } from '@/components/ui/button';
 import { Plus, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import { Ticket } from '@/types/ticket';
+import { exportTicketsToCSV } from '@/lib/support/export';
 
 export default function SupportPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingTicket, setEditingTicket] = useState<Ticket | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [ticketToDelete, setTicketToDelete] = useState<Ticket | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const tickets = useTickets();
   const stats = useTicketStats();
@@ -95,13 +101,52 @@ export default function SupportPage() {
     return filtered;
   }, [tickets, filters]);
 
-  const handleCreateTicket = async (data: any) => {
+  const handleCreateTicket = async (data: any, isEdit?: boolean) => {
     try {
-      await actions.createTicket(data);
-      toast.success('Ticket created successfully');
+      if (isEdit && editingTicket) {
+        await actions.updateTicket(editingTicket.id, data);
+        toast.success('Ticket updated successfully');
+        setEditingTicket(null);
+      } else {
+        await actions.createTicket(data);
+        toast.success('Ticket created successfully');
+      }
     } catch (error) {
-      toast.error('Failed to create ticket');
+      toast.error(isEdit ? 'Failed to update ticket' : 'Failed to create ticket');
       throw error;
+    }
+  };
+
+  const handleEditTicket = (ticket: Ticket) => {
+    setEditingTicket(ticket);
+    setDialogOpen(true);
+  };
+
+  const handleDeleteTicket = (ticket: Ticket) => {
+    setTicketToDelete(ticket);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!ticketToDelete) return;
+    setIsDeleting(true);
+    try {
+      await actions.deleteTicket(ticketToDelete.id);
+      toast.success('Ticket deleted successfully');
+    } catch (error) {
+      toast.error('Failed to delete ticket');
+    } finally {
+      setIsDeleting(false);
+      setTicketToDelete(null);
+    }
+  };
+
+  const handleExport = () => {
+    try {
+      exportTicketsToCSV(filteredTickets);
+      toast.success('Tickets exported successfully');
+    } catch (error) {
+      toast.error('Failed to export tickets');
     }
   };
 
@@ -135,11 +180,17 @@ export default function SupportPage() {
       {/* Stats Cards */}
       <TicketStatsCards stats={stats} />
 
-      {/* Create Ticket Dialog */}
+      {/* Create/Edit Ticket Dialog */}
       <TicketDialog
         open={dialogOpen}
-        onOpenChange={setDialogOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            setEditingTicket(null);
+          }
+          setDialogOpen(open);
+        }}
         onSubmit={handleCreateTicket}
+        ticket={editingTicket}
       />
 
       {/* Filters */}
@@ -147,6 +198,16 @@ export default function SupportPage() {
         filters={filters}
         onFiltersChange={actions.setFilters}
         onReset={actions.resetFilters}
+        onExport={handleExport}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <TicketDeleteDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={handleConfirmDelete}
+        ticketNumber={ticketToDelete?.ticketNumber || ''}
+        isLoading={isDeleting}
       />
 
       {/* Table */}
@@ -155,7 +216,11 @@ export default function SupportPage() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.1 }}
       >
-        <TicketTable tickets={filteredTickets} />
+        <TicketTable
+          tickets={filteredTickets}
+          onEditTicket={handleEditTicket}
+          onDeleteTicket={handleDeleteTicket}
+        />
       </motion.div>
     </motion.div>
   );
