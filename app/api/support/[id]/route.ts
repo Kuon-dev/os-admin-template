@@ -6,10 +6,11 @@ let ticketsDb: Ticket[] = JSON.parse(JSON.stringify(mockTickets));
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const ticket = ticketsDb.find((t) => t.id === params.id && !t.isDeleted);
+    const { id } = await params;
+    const ticket = ticketsDb.find((t) => t.id === id && !t.isDeleted);
 
     if (!ticket) {
       return NextResponse.json({ error: 'Ticket not found' }, { status: 404 });
@@ -24,11 +25,12 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
-    const ticketIndex = ticketsDb.findIndex((t) => t.id === params.id && !t.isDeleted);
+    const ticketIndex = ticketsDb.findIndex((t) => t.id === id && !t.isDeleted);
 
     if (ticketIndex === -1) {
       return NextResponse.json({ error: 'Ticket not found' }, { status: 404 });
@@ -68,10 +70,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const ticketIndex = ticketsDb.findIndex((t) => t.id === params.id && !t.isDeleted);
+    const { id } = await params;
+    const ticketIndex = ticketsDb.findIndex((t) => t.id === id && !t.isDeleted);
 
     if (ticketIndex === -1) {
       return NextResponse.json({ error: 'Ticket not found' }, { status: 404 });

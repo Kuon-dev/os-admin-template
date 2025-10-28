@@ -8,16 +8,17 @@ let messagesDb: Record<string, TicketMessage[]> = JSON.parse(JSON.stringify(mock
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const ticket = ticketsDb.find((t) => t.id === params.id && !t.isDeleted);
+    const { id } = await params;
+    const ticket = ticketsDb.find((t) => t.id === id && !t.isDeleted);
 
     if (!ticket) {
       return NextResponse.json({ error: 'Ticket not found' }, { status: 404 });
     }
 
-    const messages = messagesDb[params.id] || [];
+    const messages = messagesDb[id] || [];
     return NextResponse.json(messages);
   } catch (error) {
     console.error('Error in GET /api/support/[id]/messages:', error);
@@ -27,11 +28,12 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
-    const ticket = ticketsDb.find((t) => t.id === params.id && !t.isDeleted);
+    const ticket = ticketsDb.find((t) => t.id === id && !t.isDeleted);
 
     if (!ticket) {
       return NextResponse.json({ error: 'Ticket not found' }, { status: 404 });
@@ -39,7 +41,7 @@ export async function POST(
 
     const newMessage: TicketMessage = {
       id: crypto.randomUUID(),
-      ticketId: params.id,
+      ticketId: id,
       type: body.type || 'agent',
       content: body.content,
       authorId: body.authorId,
@@ -50,11 +52,11 @@ export async function POST(
       attachments: body.attachments || [],
     };
 
-    if (!messagesDb[params.id]) {
-      messagesDb[params.id] = [];
+    if (!messagesDb[id]) {
+      messagesDb[id] = [];
     }
 
-    messagesDb[params.id].push(newMessage);
+    messagesDb[id].push(newMessage);
 
     // Update ticket's firstResponseAt if this is the first response and not from customer
     if (
@@ -62,7 +64,7 @@ export async function POST(
       !ticket.firstResponseAt &&
       !ticket.isDeleted
     ) {
-      const ticketIndex = ticketsDb.findIndex((t) => t.id === params.id);
+      const ticketIndex = ticketsDb.findIndex((t) => t.id === id);
       if (ticketIndex !== -1) {
         ticketsDb[ticketIndex].firstResponseAt = newMessage.createdAt;
         ticketsDb[ticketIndex].responseTime = Math.floor(
