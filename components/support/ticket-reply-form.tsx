@@ -45,7 +45,7 @@ export function TicketReplyForm({ onSubmit }: TicketReplyFormProps) {
           />
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <Checkbox
               id="internal"
@@ -61,7 +61,7 @@ export function TicketReplyForm({ onSubmit }: TicketReplyFormProps) {
             </label>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <Button
               type="button"
               variant="outline"
@@ -74,12 +74,12 @@ export function TicketReplyForm({ onSubmit }: TicketReplyFormProps) {
             <Button
               type="submit"
               disabled={isSubmitting || !content.trim()}
-              className="gap-2"
+              className="gap-2 flex-1 sm:flex-none"
             >
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Sending...
+                  <span className="hidden sm:inline">Sending...</span>
                 </>
               ) : (
                 <>

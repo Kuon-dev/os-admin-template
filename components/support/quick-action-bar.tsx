@@ -16,10 +16,10 @@ export function QuickActionBar({
   onAssigneeChange,
 }: QuickActionBarProps) {
   return (
-    <div className="flex items-center gap-4 py-3 px-6 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-slate-950">
+    <div className="flex flex-wrap items-center gap-3 sm:gap-4 py-3 px-6 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-slate-950">
       <StatusSelector value={ticket.status as any} onChange={onStatusChange as any} />
       <div className="flex items-center gap-2">
-        <span className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+        <span className="hidden sm:inline text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
           Priority
         </span>
         <TicketPriorityBadge priority={ticket.priority} />

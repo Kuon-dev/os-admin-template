@@ -120,34 +120,34 @@ export default function TicketDetailPage() {
     <div className="h-full flex flex-col">
       {/* STICKY HEADER */}
       <header className="sticky top-0 z-50 bg-white dark:bg-slate-950 border-b border-gray-200 dark:border-gray-800">
-        <div className="px-6 py-4 space-y-3">
+        <div className="px-4 sm:px-6 py-4 space-y-3">
           {/* Row 1: Navigation & Title */}
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex items-baseline gap-3 flex-1 min-w-0">
-              <Button variant="ghost" size="sm" onClick={() => router.push('/app/support')}>
+          <div className="flex items-start justify-between gap-3 sm:gap-4">
+            <div className="flex items-baseline gap-2 sm:gap-3 flex-1 min-w-0">
+              <Button variant="ghost" size="sm" onClick={() => router.push('/app/support')} className="p-1 sm:p-2">
                 <ArrowLeft className="w-4 h-4" />
               </Button>
               <div className="min-w-0 flex-1">
                 <h1 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                   {ticket.ticketNumber}
                 </h1>
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white truncate">
+                <h2 className="text-lg sm:text-2xl font-semibold text-gray-900 dark:text-white truncate">
                   {ticket.title}
                 </h2>
-                <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">
                   {ticket.customerName} • {ticket.customerEmail}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <Button variant="ghost" size="sm" onClick={handleDeleteTicket}>
+              <Button variant="ghost" size="sm" onClick={handleDeleteTicket} className="p-1 sm:p-2">
                 <Trash2 className="w-4 h-4" />
               </Button>
             </div>
           </div>
 
           {/* Row 2: Quick Actions Bar */}
-          <div className="pl-10">
+          <div className="pl-0 sm:pl-10 -mx-4 sm:mx-0 px-4 sm:px-0">
             <QuickActionBar
               ticket={ticket}
               onStatusChange={handleStatusChange}
@@ -160,13 +160,13 @@ export default function TicketDetailPage() {
       {/* MAIN CONTENT AREA */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex-1 overflow-y-auto">
-          <div className="max-w-4xl mx-auto px-6 py-6 space-y-6">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6">
             {/* DESCRIPTION SECTION */}
             <section className="space-y-2">
               <p className="text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap">
                 {ticket.description}
               </p>
-              <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-gray-200 dark:border-gray-800 text-xs text-gray-500 dark:text-gray-400">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4 pt-4 border-t border-gray-200 dark:border-gray-800 text-xs text-gray-500 dark:text-gray-400">
                 <span>Created {format(new Date(ticket.createdAt), 'MMM d, yyyy h:mm a')}</span>
                 <span>Category: {ticket.category.charAt(0).toUpperCase() + ticket.category.slice(1)}</span>
                 {ticket.tags.length > 0 && (
@@ -197,7 +197,7 @@ export default function TicketDetailPage() {
         </div>
 
         {/* STICKY REPLY FORM AT BOTTOM */}
-        <div className="px-6 py-4">
+        <div className="px-4 sm:px-6 py-4">
           <div className="max-w-4xl mx-auto">
             <TicketReplyForm onSubmit={handleAddMessage} />
           </div>
