@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { useMemo } from 'react';
 import { Ticket, TicketMessage, TicketFilters, TicketStats, CreateTicketData, UpdateTicketData, CreateMessageData } from '@/types/ticket';
 
 interface TicketStore {
@@ -243,17 +244,62 @@ export const useMessages = (ticketId: string) =>
 export const useTicketFilters = () => useTicketStore((state) => state.filters);
 export const useTicketStats = () => useTicketStore((state) => state.stats);
 export const useTicketIsLoading = () => useTicketStore((state) => state.isLoading);
-export const useTicketActions = () =>
-  useTicketStore((state) => ({
-    fetchTickets: state.fetchTickets,
-    fetchTicket: state.fetchTicket,
-    createTicket: state.createTicket,
-    updateTicket: state.updateTicket,
-    deleteTicket: state.deleteTicket,
-    bulkUpdateTickets: state.bulkUpdateTickets,
-    fetchMessages: state.fetchMessages,
-    addMessage: state.addMessage,
-    fetchStats: state.fetchStats,
-    setFilters: state.setFilters,
-    resetFilters: state.resetFilters,
-  }));
+
+// Individual action hooks to avoid object identity issues
+export const useFetchTickets = () => useTicketStore((state) => state.fetchTickets);
+export const useFetchTicket = () => useTicketStore((state) => state.fetchTicket);
+export const useCreateTicket = () => useTicketStore((state) => state.createTicket);
+export const useUpdateTicket = () => useTicketStore((state) => state.updateTicket);
+export const useDeleteTicket = () => useTicketStore((state) => state.deleteTicket);
+export const useBulkUpdateTickets = () => useTicketStore((state) => state.bulkUpdateTickets);
+export const useFetchMessages = () => useTicketStore((state) => state.fetchMessages);
+export const useAddMessage = () => useTicketStore((state) => state.addMessage);
+export const useFetchStats = () => useTicketStore((state) => state.fetchStats);
+export const useSetFilters = () => useTicketStore((state) => state.setFilters);
+export const useResetFilters = () => useTicketStore((state) => state.resetFilters);
+
+// Convenience hook that combines all actions
+// Memoized to prevent object identity changes and infinite loops
+export const useTicketActions = () => {
+  const fetchTickets = useFetchTickets();
+  const fetchTicket = useFetchTicket();
+  const createTicket = useCreateTicket();
+  const updateTicket = useUpdateTicket();
+  const deleteTicket = useDeleteTicket();
+  const bulkUpdateTickets = useBulkUpdateTickets();
+  const fetchMessages = useFetchMessages();
+  const addMessage = useAddMessage();
+  const fetchStats = useFetchStats();
+  const setFilters = useSetFilters();
+  const resetFilters = useResetFilters();
+
+  // Memoize to ensure stable object reference
+  return useMemo(
+    () => ({
+      fetchTickets,
+      fetchTicket,
+      createTicket,
+      updateTicket,
+      deleteTicket,
+      bulkUpdateTickets,
+      fetchMessages,
+      addMessage,
+      fetchStats,
+      setFilters,
+      resetFilters,
+    }),
+    [
+      fetchTickets,
+      fetchTicket,
+      createTicket,
+      updateTicket,
+      deleteTicket,
+      bulkUpdateTickets,
+      fetchMessages,
+      addMessage,
+      fetchStats,
+      setFilters,
+      resetFilters,
+    ]
+  );
+};
