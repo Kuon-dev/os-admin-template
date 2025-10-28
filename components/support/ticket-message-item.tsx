@@ -5,9 +5,11 @@ import { format } from 'date-fns';
 
 interface TicketMessageItemProps {
   message: TicketMessage;
+  showAuthor?: boolean;
+  isGrouped?: boolean;
 }
 
-export function TicketMessageItem({ message }: TicketMessageItemProps) {
+export function TicketMessageItem({ message, showAuthor = true, isGrouped = false }: TicketMessageItemProps) {
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -38,28 +40,40 @@ export function TicketMessageItem({ message }: TicketMessageItemProps) {
   };
 
   return (
-    <div className={`p-4 rounded-lg ${getMessageBgColor()} space-y-2`}>
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10">
-            <AvatarFallback className="text-xs">
-              {getInitials(message.authorName)}
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-semibold">{message.authorName}</span>
-              <Badge variant="outline" className="text-xs">
-                {getMessageTypeLabel()}
-              </Badge>
+    <div className={`rounded-lg ${getMessageBgColor()} space-y-2 ${
+      showAuthor
+        ? 'p-4'
+        : 'px-4 py-2'
+    } ${
+      isGrouped && !showAuthor
+        ? 'ml-14'
+        : ''
+    }`}>
+      {showAuthor && (
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-10 w-10">
+              <AvatarFallback className="text-xs">
+                {getInitials(message.authorName)}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold">{message.authorName}</span>
+                <Badge variant="outline" className="text-xs">
+                  {getMessageTypeLabel()}
+                </Badge>
+              </div>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                {format(new Date(message.createdAt), 'MMM d, yyyy h:mm a')}
+              </span>
             </div>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              {format(new Date(message.createdAt), 'MMM d, yyyy h:mm a')}
-            </span>
           </div>
         </div>
+      )}
+      <div className={`text-gray-800 dark:text-gray-200 whitespace-pre-wrap ${!showAuthor ? 'text-sm' : ''}`}>
+        {message.content}
       </div>
-      <div className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">{message.content}</div>
       {message.attachments && message.attachments.length > 0 && (
         <div className="text-sm text-gray-600 dark:text-gray-400">
           📎 {message.attachments.length} attachment{message.attachments.length > 1 ? 's' : ''}
