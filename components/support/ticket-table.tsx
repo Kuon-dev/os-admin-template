@@ -46,7 +46,7 @@ export function TicketTable({ tickets, onEditTicket, onDeleteTicket }: TicketTab
 
   const table = useReactTable({
     data: tickets,
-    columns: ticketTableColumns,
+    columns: columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
