@@ -173,3 +173,20 @@
   border-left: 3px solid var(--palette-active-border);
   background-color: var(--palette-active-bg);
 }
+
+/* React Flow MiniMap Dark Mode */
+.dark .react-flow__minimap {
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+}
+
+.dark .react-flow__minimap-canvas {
+  background-color: hsl(var(--card));
+}
+
+.dark .react-flow__minimap-mask {
+  fill: rgba(253, 91, 58, 0.2);
+  stroke: hsl(var(--primary));
+  stroke-width: 2;
+}

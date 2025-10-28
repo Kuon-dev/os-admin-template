@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useTicketStore, useCurrentTicket, useMessages, useTicketActions } from '@/stores/ticket-store';
-import { TicketDetailMessages } from '@/components/support/ticket-detail-messages';
-import { TicketDetailReplyForm } from '@/components/support/ticket-detail-reply-form';
-import { TicketDetailSidebar } from '@/components/support/ticket-detail-sidebar';
-import { QuickActionsCard } from '@/components/support/quick-actions-card';
+import { TicketDetailMessages } from './ticket-detail-messages';
+import { TicketDetailReplyForm } from './ticket-detail-reply-form';
+import { TicketDetailSidebar } from './ticket-detail-sidebar';
+import { QuickActionsCard } from './quick-actions-card';
 import { getTeamMemberName } from '@/lib/support/assignees';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -14,18 +14,29 @@ import { ArrowLeft, Loader2, MoreVertical, Info } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 
-export default function TicketDetailPage() {
-  const params = useParams();
+export function TicketDetail() {
   const router = useRouter();
-  const ticketId = params.id as string;
-
+  const [ticketId, setTicketId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const ticket = useCurrentTicket();
-  const messages = useMessages(ticketId);
+  const messages = useMessages(ticketId || '');
   const actions = useTicketActions();
 
+  // Get ticket ID from localStorage or URL
   useEffect(() => {
+    const id = typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search).get('id') || localStorage.getItem('selectedTicketId')
+      : null;
+
+    if (id) {
+      setTicketId(id);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!ticketId) return;
+
     const loadData = async () => {
       try {
         await actions.fetchTicket(ticketId);
@@ -41,6 +52,7 @@ export default function TicketDetailPage() {
   }, [ticketId, actions, router]);
 
   const handleStatusChange = async (newStatus: string) => {
+    if (!ticketId) return;
     try {
       await actions.updateTicket(ticketId, { status: newStatus as any });
       toast.success('Ticket status updated');
@@ -50,6 +62,7 @@ export default function TicketDetailPage() {
   };
 
   const handleAssigneeChange = async (assigneeId: string | null) => {
+    if (!ticketId) return;
     try {
       await actions.updateTicket(ticketId, {
         assignedTo: assigneeId,
@@ -62,6 +75,7 @@ export default function TicketDetailPage() {
   };
 
   const handlePriorityChange = async (newPriority: string) => {
+    if (!ticketId) return;
     try {
       await actions.updateTicket(ticketId, { priority: newPriority as any });
       toast.success('Ticket priority updated');
@@ -71,7 +85,7 @@ export default function TicketDetailPage() {
   };
 
   const handleAddMessage = async (data: { content: string; isInternal: boolean }) => {
-    if (!ticket) return;
+    if (!ticket || !ticketId) return;
 
     try {
       await actions.addMessage(ticketId, {
@@ -157,7 +171,7 @@ export default function TicketDetailPage() {
           <TicketDetailMessages messages={messages} isLoading={isLoading} />
 
           {/* Reply Form */}
-          <TicketDetailReplyForm onSubmit={handleAddMessage} />
+          <TicketDetailReplyForm onSubmit={handleAddMessage} isInternal={false} />
         </div>
 
         {/* Desktop Sidebar */}

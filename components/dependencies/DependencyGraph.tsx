@@ -306,6 +306,19 @@ function DependencyGraphInner() {
                   zoomable
                   pannable
                   className="bg-background"
+                  nodeColor={(node) => {
+                    if (typeof window !== 'undefined' && document.documentElement.classList.contains('dark')) {
+                      return '#334155';
+                    }
+                    return '#e2e8f0';
+                  }}
+                  nodeStrokeColor={(node) => {
+                    if (typeof window !== 'undefined' && document.documentElement.classList.contains('dark')) {
+                      return '#64748b';
+                    }
+                    return '#cbd5e1';
+                  }}
+                  maskColor="rgba(59, 130, 246, 0.1)"
                 />
               </ReactFlow>
 
