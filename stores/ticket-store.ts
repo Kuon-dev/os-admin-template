@@ -239,8 +239,10 @@ export const useTicketStore = create<TicketStore>((set, get) => ({
 // Selector hooks for performance
 export const useTickets = () => useTicketStore((state) => state.tickets);
 export const useCurrentTicket = () => useTicketStore((state) => state.currentTicket);
-export const useMessages = (ticketId: string) =>
-  useTicketStore((state) => state.messages[ticketId] || []);
+export const useMessages = (ticketId: string) => {
+  const allMessages = useTicketStore((state) => state.messages);
+  return allMessages[ticketId] || [];
+};
 export const useTicketFilters = () => useTicketStore((state) => state.filters);
 export const useTicketStats = () => useTicketStore((state) => state.stats);
 export const useTicketIsLoading = () => useTicketStore((state) => state.isLoading);
