@@ -19,15 +19,15 @@ export function TicketMessageItem({ message }: TicketMessageItemProps) {
 
   const getMessageBgColor = () => {
     if (message.type === 'customer') {
-      return 'bg-blue-50 border-l-4 border-blue-500';
+      return 'bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 dark:border-blue-400';
     }
     if (message.type === 'internal') {
-      return 'bg-yellow-50 border-l-4 border-yellow-500';
+      return 'bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 dark:border-yellow-400';
     }
     if (message.type === 'system') {
-      return 'bg-gray-50 border-l-4 border-gray-500';
+      return 'bg-gray-50 dark:bg-gray-800 border-l-4 border-gray-500 dark:border-gray-400';
     }
-    return 'bg-white border-l-4 border-gray-500';
+    return 'bg-white dark:bg-slate-800 border-l-4 border-gray-500 dark:border-gray-400';
   };
 
   const getMessageTypeLabel = () => {
@@ -53,15 +53,15 @@ export function TicketMessageItem({ message }: TicketMessageItemProps) {
                 {getMessageTypeLabel()}
               </Badge>
             </div>
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-gray-500 dark:text-gray-400">
               {format(new Date(message.createdAt), 'MMM d, yyyy h:mm a')}
             </span>
           </div>
         </div>
       </div>
-      <div className="text-gray-800 whitespace-pre-wrap">{message.content}</div>
+      <div className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">{message.content}</div>
       {message.attachments && message.attachments.length > 0 && (
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-gray-600 dark:text-gray-400">
           📎 {message.attachments.length} attachment{message.attachments.length > 1 ? 's' : ''}
         </div>
       )}

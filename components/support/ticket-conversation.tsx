@@ -20,7 +20,7 @@ export function TicketConversation({ messages, isLoading }: TicketConversationPr
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">Loading conversation...</div>
+        <div className="text-gray-500 dark:text-gray-400">Loading conversation...</div>
       </div>
     );
   }
@@ -29,8 +29,8 @@ export function TicketConversation({ messages, isLoading }: TicketConversationPr
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <p className="text-gray-500">No messages yet</p>
-          <p className="text-sm text-gray-400">Start a conversation by replying below</p>
+          <p className="text-gray-500 dark:text-gray-400">No messages yet</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500">Start a conversation by replying below</p>
         </div>
       </div>
     );

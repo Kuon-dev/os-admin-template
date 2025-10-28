@@ -51,7 +51,7 @@ export function TicketSLAIndicator({ dueDate, resolved }: TicketSLAIndicatorProp
 
   if (resolved) {
     return (
-      <div className="flex items-center gap-1 text-sm text-green-600">
+      <div className="flex items-center gap-1 text-sm text-green-600 dark:text-green-400">
         <CheckCircle className="h-4 w-4" />
         <span>Resolved</span>
       </div>
@@ -60,7 +60,7 @@ export function TicketSLAIndicator({ dueDate, resolved }: TicketSLAIndicatorProp
 
   if (status === 'overdue') {
     return (
-      <div className="flex items-center gap-1 text-sm text-red-600 font-medium">
+      <div className="flex items-center gap-1 text-sm text-red-600 dark:text-red-400 font-medium">
         <AlertTriangle className="h-4 w-4" />
         <span>{timeRemaining}</span>
       </div>
@@ -69,7 +69,7 @@ export function TicketSLAIndicator({ dueDate, resolved }: TicketSLAIndicatorProp
 
   if (status === 'due_soon') {
     return (
-      <div className="flex items-center gap-1 text-sm text-yellow-600 font-medium">
+      <div className="flex items-center gap-1 text-sm text-yellow-600 dark:text-yellow-400 font-medium">
         <Clock className="h-4 w-4" />
         <span>{timeRemaining}</span>
       </div>
@@ -77,7 +77,7 @@ export function TicketSLAIndicator({ dueDate, resolved }: TicketSLAIndicatorProp
   }
 
   return (
-    <div className="flex items-center gap-1 text-sm text-gray-600">
+    <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
       <Clock className="h-4 w-4" />
       <span>{timeRemaining}</span>
     </div>

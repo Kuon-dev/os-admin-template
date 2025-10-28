@@ -42,13 +42,13 @@ export function TicketMetadataPanel({ ticket, onAssigneeChange }: TicketMetadata
       {/* Status & Priority */}
       <Card className="p-4 space-y-3">
         <div>
-          <label className="text-xs font-semibold text-gray-500 uppercase">Status</label>
+          <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Status</label>
           <div className="mt-2">
             <TicketStatusBadge status={ticket.status} />
           </div>
         </div>
         <div>
-          <label className="text-xs font-semibold text-gray-500 uppercase">Priority</label>
+          <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Priority</label>
           <div className="mt-2">
             <TicketPriorityBadge priority={ticket.priority} />
           </div>
@@ -58,9 +58,9 @@ export function TicketMetadataPanel({ ticket, onAssigneeChange }: TicketMetadata
       {/* SLA */}
       <Card className="p-4 space-y-3">
         <div>
-          <label className="text-xs font-semibold text-gray-500 uppercase">SLA Due Date</label>
+          <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">SLA Due Date</label>
           <div className="mt-2 space-y-1">
-            <p className="text-sm text-gray-700">
+            <p className="text-sm text-gray-700 dark:text-gray-300">
               {format(new Date(ticket.dueDate), 'MMM d, yyyy h:mm a')}
             </p>
             <TicketSLAIndicator
@@ -73,7 +73,7 @@ export function TicketMetadataPanel({ ticket, onAssigneeChange }: TicketMetadata
 
       {/* Assignee */}
       <Card className="p-4">
-        <label className="text-xs font-semibold text-gray-500 uppercase block mb-2">
+        <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase block mb-2">
           Assigned To
         </label>
         <Select
@@ -96,17 +96,17 @@ export function TicketMetadataPanel({ ticket, onAssigneeChange }: TicketMetadata
 
       {/* Customer Info */}
       <Card className="p-4 space-y-3">
-        <label className="text-xs font-semibold text-gray-500 uppercase block">
+        <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase block">
           Customer Information
         </label>
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm">
-            <User className="h-4 w-4 text-gray-400" />
-            <span className="text-gray-700">{ticket.customerName}</span>
+            <User className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+            <span className="text-gray-700 dark:text-gray-300">{ticket.customerName}</span>
           </div>
           <div className="flex items-center gap-2 text-sm">
-            <Mail className="h-4 w-4 text-gray-400" />
-            <a href={`mailto:${ticket.customerEmail}`} className="text-blue-600 hover:underline">
+            <Mail className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+            <a href={`mailto:${ticket.customerEmail}`} className="text-blue-600 dark:text-blue-400 hover:underline">
               {ticket.customerEmail}
             </a>
           </div>
@@ -115,7 +115,7 @@ export function TicketMetadataPanel({ ticket, onAssigneeChange }: TicketMetadata
 
       {/* Category */}
       <Card className="p-4">
-        <label className="text-xs font-semibold text-gray-500 uppercase block mb-2">
+        <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase block mb-2">
           Category
         </label>
         <Badge variant="outline">{capitalizeCategory(ticket.category)}</Badge>
@@ -124,7 +124,7 @@ export function TicketMetadataPanel({ ticket, onAssigneeChange }: TicketMetadata
       {/* Tags */}
       {ticket.tags.length > 0 && (
         <Card className="p-4">
-          <label className="text-xs font-semibold text-gray-500 uppercase block mb-2">
+          <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase block mb-2">
             Tags
           </label>
           <div className="flex flex-wrap gap-2">
@@ -140,22 +140,22 @@ export function TicketMetadataPanel({ ticket, onAssigneeChange }: TicketMetadata
 
       {/* Timeline */}
       <Card className="p-4 space-y-3">
-        <label className="text-xs font-semibold text-gray-500 uppercase block">Timeline</label>
+        <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase block">Timeline</label>
         <div className="space-y-2 text-sm">
           <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-gray-400" />
+            <Calendar className="h-4 w-4 text-gray-400 dark:text-gray-500" />
             <div>
-              <p className="text-gray-600">Created</p>
-              <p className="text-gray-800">{format(new Date(ticket.createdAt), 'MMM d, yyyy')}</p>
+              <p className="text-gray-600 dark:text-gray-400">Created</p>
+              <p className="text-gray-800 dark:text-gray-200">{format(new Date(ticket.createdAt), 'MMM d, yyyy')}</p>
             </div>
           </div>
 
           {ticket.firstResponseAt && (
             <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-gray-400" />
+              <Clock className="h-4 w-4 text-gray-400 dark:text-gray-500" />
               <div>
-                <p className="text-gray-600">First Response</p>
-                <p className="text-gray-800">
+                <p className="text-gray-600 dark:text-gray-400">First Response</p>
+                <p className="text-gray-800 dark:text-gray-200">
                   {format(new Date(ticket.firstResponseAt), 'MMM d, yyyy h:mm a')}
                 </p>
               </div>
@@ -164,10 +164,10 @@ export function TicketMetadataPanel({ ticket, onAssigneeChange }: TicketMetadata
 
           {ticket.resolvedAt && (
             <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-gray-400" />
+              <CheckCircle className="h-4 w-4 text-gray-400 dark:text-gray-500" />
               <div>
-                <p className="text-gray-600">Resolved</p>
-                <p className="text-gray-800">
+                <p className="text-gray-600 dark:text-gray-400">Resolved</p>
+                <p className="text-gray-800 dark:text-gray-200">
                   {format(new Date(ticket.resolvedAt), 'MMM d, yyyy h:mm a')}
                 </p>
               </div>
