@@ -1,26 +1,8 @@
 import { Ticket } from '@/types/ticket';
-import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { TicketStatusBadge } from './ticket-status-badge';
-import { TicketPriorityBadge } from './ticket-priority-badge';
 import { TicketSLAIndicator } from './ticket-sla-indicator';
-import { teamMembers, getTeamMemberName } from '@/lib/support/assignees';
+import { User, Mail } from 'lucide-react';
 import { format } from 'date-fns';
-import {
-  User,
-  Mail,
-  Tag,
-  Calendar,
-  Clock,
-  CheckCircle,
-} from 'lucide-react';
 
 interface TicketMetadataPanelProps {
   ticket: Ticket;
@@ -32,36 +14,94 @@ export function TicketMetadataPanel({ ticket, onAssigneeChange }: TicketMetadata
     return category.charAt(0).toUpperCase() + category.slice(1);
   };
 
-  const handleAssigneeChange = async (assigneeId: string) => {
-    const id = assigneeId === 'unassigned' ? null : assigneeId;
-    await onAssigneeChange?.(id);
-  };
-
   return (
-    <div className="space-y-4">
-      {/* Status & Priority */}
-      <Card className="p-4 space-y-3">
-        <div>
-          <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Status</label>
-          <div className="mt-2">
-            <TicketStatusBadge status={ticket.status} />
+    <div className="space-y-8 max-w-sm">
+      {/* Section 1: Contact Info */}
+      <section>
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-4">
+          Contact
+        </h3>
+        <div className="space-y-2 text-sm">
+          <div className="flex items-start gap-2">
+            <User className="w-4 h-4 text-gray-400 dark:text-gray-500 mt-0.5 flex-shrink-0" />
+            <div className="min-w-0">
+              <p className="text-gray-900 dark:text-gray-100 font-medium">
+                {ticket.customerName}
+              </p>
+              <a href={`mailto:${ticket.customerEmail}`}
+                 className="text-blue-600 dark:text-blue-400 hover:underline text-xs">
+                {ticket.customerEmail}
+              </a>
+            </div>
           </div>
         </div>
-        <div>
-          <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Priority</label>
-          <div className="mt-2">
-            <TicketPriorityBadge priority={ticket.priority} />
-          </div>
-        </div>
-      </Card>
+      </section>
 
-      {/* SLA */}
-      <Card className="p-4 space-y-3">
-        <div>
-          <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">SLA Due Date</label>
-          <div className="mt-2 space-y-1">
-            <p className="text-sm text-gray-700 dark:text-gray-300">
-              {format(new Date(ticket.dueDate), 'MMM d, yyyy h:mm a')}
+      {/* Section 2: Organization */}
+      <section>
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-4">
+          Organization
+        </h3>
+        <div className="space-y-3">
+          <div>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Category</p>
+            <Badge variant="outline">{capitalizeCategory(ticket.category)}</Badge>
+          </div>
+          {ticket.tags.length > 0 && (
+            <div>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Tags</p>
+              <div className="flex flex-wrap gap-1">
+                {ticket.tags.map(tag => (
+                  <Badge key={tag} variant="secondary" className="text-xs">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Section 3: Timeline & SLA */}
+      <section>
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-4">
+          Timeline
+        </h3>
+        <div className="space-y-3">
+          {/* Timeline events */}
+          <div className="space-y-2 text-xs">
+            <div className="flex items-center justify-between py-2 border-b border-gray-200 dark:border-gray-800">
+              <span className="text-gray-600 dark:text-gray-400">Created</span>
+              <time className="text-gray-900 dark:text-gray-100 font-medium"
+                    title={format(new Date(ticket.createdAt), 'PPpp')}>
+                {format(new Date(ticket.createdAt), 'MMM d')}
+              </time>
+            </div>
+
+            {ticket.firstResponseAt && (
+              <div className="flex items-center justify-between py-2 border-b border-gray-200 dark:border-gray-800">
+                <span className="text-gray-600 dark:text-gray-400">First response</span>
+                <time className="text-gray-900 dark:text-gray-100 font-medium">
+                  {format(new Date(ticket.firstResponseAt), 'MMM d, h:mm a')}
+                </time>
+              </div>
+            )}
+
+            {ticket.resolvedAt && (
+              <div className="flex items-center justify-between py-2">
+                <span className="text-gray-600 dark:text-gray-400">Resolved</span>
+                <time className="text-gray-900 dark:text-gray-100 font-medium">
+                  {format(new Date(ticket.resolvedAt), 'MMM d, h:mm a')}
+                </time>
+              </div>
+            )}
+          </div>
+
+          {/* SLA Info */}
+          <div className="p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg mt-4">
+            <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">SLA Due</p>
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
+              {format(new Date(ticket.dueDate), 'MMM d, h:mm a')}
             </p>
             <TicketSLAIndicator
               dueDate={ticket.dueDate}
@@ -69,112 +109,7 @@ export function TicketMetadataPanel({ ticket, onAssigneeChange }: TicketMetadata
             />
           </div>
         </div>
-      </Card>
-
-      {/* Assignee */}
-      <Card className="p-4">
-        <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase block mb-2">
-          Assigned To
-        </label>
-        <Select
-          value={ticket.assignedTo || 'unassigned'}
-          onValueChange={handleAssigneeChange}
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="unassigned">Unassigned</SelectItem>
-            {teamMembers.map((member) => (
-              <SelectItem key={member.id} value={member.id}>
-                {member.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </Card>
-
-      {/* Customer Info */}
-      <Card className="p-4 space-y-3">
-        <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase block">
-          Customer Information
-        </label>
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 text-sm">
-            <User className="h-4 w-4 text-gray-400 dark:text-gray-500" />
-            <span className="text-gray-700 dark:text-gray-300">{ticket.customerName}</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm">
-            <Mail className="h-4 w-4 text-gray-400 dark:text-gray-500" />
-            <a href={`mailto:${ticket.customerEmail}`} className="text-blue-600 dark:text-blue-400 hover:underline">
-              {ticket.customerEmail}
-            </a>
-          </div>
-        </div>
-      </Card>
-
-      {/* Category */}
-      <Card className="p-4">
-        <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase block mb-2">
-          Category
-        </label>
-        <Badge variant="outline">{capitalizeCategory(ticket.category)}</Badge>
-      </Card>
-
-      {/* Tags */}
-      {ticket.tags.length > 0 && (
-        <Card className="p-4">
-          <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase block mb-2">
-            Tags
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {ticket.tags.map((tag) => (
-              <Badge key={tag} variant="secondary">
-                <Tag className="h-3 w-3 mr-1" />
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        </Card>
-      )}
-
-      {/* Timeline */}
-      <Card className="p-4 space-y-3">
-        <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase block">Timeline</label>
-        <div className="space-y-2 text-sm">
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-gray-400 dark:text-gray-500" />
-            <div>
-              <p className="text-gray-600 dark:text-gray-400">Created</p>
-              <p className="text-gray-800 dark:text-gray-200">{format(new Date(ticket.createdAt), 'MMM d, yyyy')}</p>
-            </div>
-          </div>
-
-          {ticket.firstResponseAt && (
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-gray-400 dark:text-gray-500" />
-              <div>
-                <p className="text-gray-600 dark:text-gray-400">First Response</p>
-                <p className="text-gray-800 dark:text-gray-200">
-                  {format(new Date(ticket.firstResponseAt), 'MMM d, yyyy h:mm a')}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {ticket.resolvedAt && (
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-gray-400 dark:text-gray-500" />
-              <div>
-                <p className="text-gray-600 dark:text-gray-400">Resolved</p>
-                <p className="text-gray-800 dark:text-gray-200">
-                  {format(new Date(ticket.resolvedAt), 'MMM d, yyyy h:mm a')}
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-      </Card>
+      </section>
     </div>
   );
 }
