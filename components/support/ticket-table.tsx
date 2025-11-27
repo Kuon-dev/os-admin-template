@@ -11,7 +11,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -35,9 +35,10 @@ interface TicketTableProps {
   tickets: Ticket[];
   onEditTicket?: (ticket: Ticket) => void;
   onDeleteTicket?: (ticket: Ticket) => void;
+  onSelectionChange?: (count: number, tickets: Ticket[]) => void;
 }
 
-export function TicketTable({ tickets, onEditTicket, onDeleteTicket }: TicketTableProps) {
+export function TicketTable({ tickets, onEditTicket, onDeleteTicket, onSelectionChange }: TicketTableProps) {
   const columns = createTicketTableColumns(onEditTicket, onDeleteTicket);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -67,6 +68,15 @@ export function TicketTable({ tickets, onEditTicket, onDeleteTicket }: TicketTab
       },
     },
   });
+
+  // Notify parent of selection changes
+  useEffect(() => {
+    if (onSelectionChange) {
+      const selectedRows = table.getSelectedRowModel().rows;
+      const selectedTickets = selectedRows.map(row => row.original);
+      onSelectionChange(selectedTickets.length, selectedTickets);
+    }
+  }, [rowSelection, table, onSelectionChange]);
 
   return (
     <div className="space-y-4">

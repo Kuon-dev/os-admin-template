@@ -12,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { X, Search, RotateCcw, Download } from 'lucide-react';
+import { X, Search, RotateCcw, Download, Plus } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
 const statusOptions: { value: string; label: string }[] = [
@@ -63,9 +63,11 @@ interface TicketFiltersProps {
   onFiltersChange: (filters: any) => void;
   onReset: () => void;
   onExport?: () => void;
+  onCreate?: () => void;
+  resultCount?: number;
 }
 
-export function TicketFilters({ filters, onFiltersChange, onReset, onExport }: TicketFiltersProps) {
+export function TicketFilters({ filters, onFiltersChange, onReset, onExport, onCreate, resultCount }: TicketFiltersProps) {
   const [searchInput, setSearchInput] = useState(filters.search);
 
   const handleSearchChange = (value: string) => {
@@ -96,35 +98,38 @@ export function TicketFilters({ filters, onFiltersChange, onReset, onExport }: T
   return (
     <Card className="p-4 space-y-4">
       {/* Search and Controls */}
-      <div className="flex gap-2 items-end">
-        <div className="flex-1">
-          <label className="text-sm font-medium text-gray-700 mb-1 block">
-            Search
-          </label>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Search by ID, title, customer..."
-              value={searchInput}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="pl-10"
-            />
-          </div>
+      <div className="flex flex-col sm:flex-row gap-3 items-end">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search by ID, title, customer..."
+            value={searchInput}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="pl-10"
+          />
         </div>
-        <Button variant="outline" size="sm" onClick={handleReset}>
-          <RotateCcw className="h-4 w-4 mr-2" />
-          Reset
-        </Button>
-        <Button variant="outline" size="sm" onClick={onExport}>
-          <Download className="h-4 w-4 mr-2" />
-          Export CSV
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={handleReset}>
+            <RotateCcw className="h-4 w-4 mr-2" />
+            Reset
+          </Button>
+          <Button variant="outline" size="sm" onClick={onExport}>
+            <Download className="h-4 w-4 mr-2" />
+            Export CSV
+          </Button>
+          {onCreate && (
+            <Button size="sm" onClick={onCreate}>
+              <Plus className="h-4 w-4 mr-2" />
+              New Ticket
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Filter Dropdowns */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div>
-          <label className="text-sm font-medium text-gray-700 mb-1 block">
+          <label className="text-sm font-medium text-muted-foreground mb-1 block">
             Status
           </label>
           <Select
@@ -147,7 +152,7 @@ export function TicketFilters({ filters, onFiltersChange, onReset, onExport }: T
         </div>
 
         <div>
-          <label className="text-sm font-medium text-gray-700 mb-1 block">
+          <label className="text-sm font-medium text-muted-foreground mb-1 block">
             Priority
           </label>
           <Select
@@ -170,7 +175,7 @@ export function TicketFilters({ filters, onFiltersChange, onReset, onExport }: T
         </div>
 
         <div>
-          <label className="text-sm font-medium text-gray-700 mb-1 block">
+          <label className="text-sm font-medium text-muted-foreground mb-1 block">
             Category
           </label>
           <Select
@@ -193,7 +198,7 @@ export function TicketFilters({ filters, onFiltersChange, onReset, onExport }: T
         </div>
 
         <div>
-          <label className="text-sm font-medium text-gray-700 mb-1 block">
+          <label className="text-sm font-medium text-muted-foreground mb-1 block">
             SLA Status
           </label>
           <Select
@@ -218,7 +223,7 @@ export function TicketFilters({ filters, onFiltersChange, onReset, onExport }: T
 
       {/* Tag Filter */}
       <div>
-        <label className="text-sm font-medium text-gray-700 mb-2 block">
+        <label className="text-sm font-medium text-muted-foreground mb-2 block">
           Tags
         </label>
         <div className="flex flex-wrap gap-2">
@@ -238,17 +243,26 @@ export function TicketFilters({ filters, onFiltersChange, onReset, onExport }: T
         </div>
       </div>
 
-      {/* Active Filters Display */}
-      {hasActiveFilters && (
-        <div className="text-sm text-gray-600">
-          {filters.tags.length > 0 && (
+      {/* Result Count and Active Filters Display */}
+      <div className="flex items-center justify-between pt-2 border-t border-border">
+        <div className="text-sm text-muted-foreground">
+          {resultCount !== undefined && (
             <span>
-              Filtering by {filters.tags.length} tag
-              {filters.tags.length > 1 ? 's' : ''}
+              {resultCount} result{resultCount !== 1 ? 's' : ''}
             </span>
           )}
         </div>
-      )}
+        {hasActiveFilters && (
+          <div className="text-sm text-muted-foreground">
+            {filters.tags.length > 0 && (
+              <span>
+                Filtering by {filters.tags.length} tag
+                {filters.tags.length > 1 ? 's' : ''}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
     </Card>
   );
 }

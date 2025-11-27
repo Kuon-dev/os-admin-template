@@ -63,13 +63,18 @@ export function MiniChart({
     threshold: 0.1,
   });
 
+  const [mounted, setMounted] = useState(false);
   const [animatedData, setAnimatedData] = useState(data.map(() => 0));
 
   useEffect(() => {
-    if (inView) {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (inView && mounted) {
       setTimeout(() => setAnimatedData(data), 100);
     }
-  }, [inView, data]);
+  }, [inView, data, mounted]);
 
   const max = Math.max(...data);
   const min = Math.min(...data);
@@ -91,7 +96,7 @@ export function MiniChart({
     const barWidth = (width - padding * 2) / data.length - 2;
     return (
       <div ref={ref} className="overflow-hidden rounded-lg">
-        <svg width={width} height={height} className="w-full">
+        <svg width={width} height={height} className="w-full" suppressHydrationWarning>
           {points.map((point, index) => (
             <motion.rect
               key={index}
@@ -124,7 +129,7 @@ export function MiniChart({
 
   return (
     <div ref={ref} className="overflow-hidden rounded-lg">
-      <svg width={width} height={height} className="w-full">
+      <svg width={width} height={height} className="w-full" suppressHydrationWarning>
         {showGradient && (
           <defs>
             <linearGradient id={`gradient-${color}`} x1="0" x2="0" y1="0" y2="1">

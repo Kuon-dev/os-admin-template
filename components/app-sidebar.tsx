@@ -75,6 +75,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             url: "/app/products",
           },
           {
+            title: "Properties",
+            url: "/app/properties",
+          },
+          {
             title: t('management.orders'),
             url: "/app/orders",
           },
